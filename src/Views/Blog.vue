@@ -3,5 +3,5 @@
 </template>
 
 <script setup>
-import BlogList from '../components/BlogList.vue'
+import BlogList from "../Components/BlogList.vue";
 </script>

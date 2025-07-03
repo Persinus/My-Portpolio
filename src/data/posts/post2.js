@@ -1,0 +1,15 @@
+export default {
+  id: 2,
+  title: 'Learning Xamarin from beginning - Ep 2 - Data processing',
+  cover: 'https://placehold.co/800x300?text=Xamarin',
+  author: 'Pham Phu Quoi',
+  authorAvatar: 'https://placehold.co/40x40?text=PQ',
+  date: '4/2/2020 5:18 SA',
+  toc: ['Intro', 'Data Processing', 'Summary'],
+  warning: '',
+  barge: ['Xamarin'],
+  content: `<p>Giới thiệu cách xử lý dữ liệu trong Xamarin...</p>`,
+  views: 384,
+  comments: 0,
+  bookmarks: 0,
+}

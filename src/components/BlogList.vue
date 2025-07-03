@@ -1,29 +1,55 @@
 <template>
-  <section class="bg-gray-900 py-12">
-    <div class="container mx-auto">
-      <h2 class="text-3xl font-bold text-white mb-8 text-center">Blog Chia Sẻ Game & Kiến Thức</h2>
-      <div class="flex justify-end mb-6">
+  <section class="bg-gray-100 py-10 min-h-screen">
+    <div class="max-w-4xl mx-auto">
+      <!-- Search bar -->
+      <div class="flex items-center gap-2 mb-6">
         <input
           v-model="keyword"
           type="text"
           placeholder="Tìm kiếm bài viết..."
-          class="px-4 py-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none"
+          class="flex-1 px-4 py-2 rounded border border-gray-300 bg-white focus:outline-none"
         />
+        <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+          Tìm kiếm
+        </button>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div
-          v-for="post in filteredPosts"
-          :key="post.id"
-          class="bg-gray-800 rounded-lg p-6 shadow-lg flex flex-col"
-        >
-          <img :src="post.image" :alt="post.title" class="w-full h-40 object-cover rounded mb-4" />
-          <h3 class="text-xl font-semibold text-yellow-400 mb-2">{{ post.title }}</h3>
-          <p class="text-gray-300 mb-4">{{ post.summary }}</p>
-          <div class="flex items-center mb-4">
-            <img :src="post.authorAvatar" alt="avatar" class="w-8 h-8 rounded-full mr-2" />
-            <span class="text-gray-400 text-sm">{{ post.author }}</span>
+      <!-- Danh sách bài viết -->
+      <div
+        v-for="post in filteredPosts"
+        :key="post.id"
+        class="bg-white rounded shadow p-5 mb-6 flex gap-4"
+      >
+        <img
+          :src="post.authorAvatar"
+          alt="avatar"
+          class="w-12 h-12 rounded-full object-cover"
+        />
+        <div class="flex-1">
+          <div class="flex items-center gap-2 text-gray-500 text-xs mb-1">
+            <span class="font-semibold text-blue-700">{{ post.author }}</span>
+            <span>{{ post.date }}</span>
           </div>
-          <router-link :to="post.link" class="text-green-400 hover:underline mt-auto">Xem chi tiết</router-link>
+          <router-link
+            :to="`/blog/${post.id}`"
+            class="block text-lg font-bold text-gray-900 hover:text-blue-600 mb-1"
+          >
+            {{ post.title }}
+          </router-link>
+          <div class="flex flex-wrap gap-2 mb-2">
+            <span
+              v-for="tag in post.tags"
+              :key="tag"
+              class="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-xs font-semibold"
+            >
+              {{ tag }}
+            </span>
+          </div>
+          <div class="text-gray-600 text-sm mb-2">{{ post.summary }}</div>
+          <div class="flex items-center gap-4 text-gray-400 text-xs">
+            <span><i class="fa fa-eye"></i> {{ post.views }}</span>
+            <span><i class="fa fa-comment"></i> {{ post.comments }}</span>
+            <span><i class="fa fa-bookmark"></i> {{ post.bookmarks }}</span>
+          </div>
         </div>
       </div>
       <div v-if="filteredPosts.length === 0" class="text-center text-gray-400 mt-8">
@@ -34,56 +60,20 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed } from "vue";
+import { posts } from "../data/BlogPosts"; // Đường dẫn tùy vị trí file BlogList.vue
 
-const keyword = ref('')
-
-const posts = [
-  {
-    id: 1,
-    title: 'Cách xây dựng gameplay hấp dẫn cho game indie',
-    summary: 'Chia sẻ kinh nghiệm thiết kế gameplay cuốn hút, giữ chân người chơi lâu dài.',
-    image: 'https://placehold.co/400x200?text=Gameplay',
-    author: 'DevGame',
-    authorAvatar: 'https://placehold.co/40x40?text=DG',
-    link: '/blog/1'
-  },
-  {
-    id: 2,
-    title: 'Unity hay Godot? Chọn engine nào cho dự án đầu tay',
-    summary: 'So sánh ưu nhược điểm của hai engine phổ biến nhất hiện nay cho lập trình game.',
-    image: 'https://placehold.co/400x200?text=Engine',
-    author: 'DevGame',
-    authorAvatar: 'https://placehold.co/40x40?text=DG',
-    link: '/blog/2'
-  },
-  {
-    id: 3,
-    title: 'Tối ưu hiệu năng cho game mobile',
-    summary: 'Một số mẹo tối ưu hóa giúp game của bạn chạy mượt mà trên thiết bị di động.',
-    image: 'https://placehold.co/400x200?text=Mobile+Game',
-    author: 'DevGame',
-    authorAvatar: 'https://placehold.co/40x40?text=DG',
-    link: '/blog/3'
-  },
-  {
-    id: 4,
-    title: 'Thiết kế UI/UX cho game đơn giản mà hiệu quả',
-    summary: 'Những nguyên tắc cơ bản giúp giao diện game thân thiện với người chơi.',
-    image: 'https://placehold.co/400x200?text=UI+UX',
-    author: 'DevGame',
-    authorAvatar: 'https://placehold.co/40x40?text=DG',
-    link: '/blog/4'
-  }
-]
+const keyword = ref("");
 
 const filteredPosts = computed(() =>
   posts.filter(
-    post =>
+    (post) =>
       post.title.toLowerCase().includes(keyword.value.toLowerCase()) ||
-      post.author.toLowerCase().includes(keyword.value.toLowerCase())
+      post.author.toLowerCase().includes(keyword.value.toLowerCase()) ||
+      (post.tags &&
+        post.tags.some((tag) => tag.toLowerCase().includes(keyword.value.toLowerCase())))
   )
-)
+);
 </script>
 
 <style scoped>

@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-
     {
-      path: '/',  // Route cho trang chủ
+      path: '/',
       name: 'TrangChu',
-      component: () => import('../Views/Main.vue'),  // Lazy load component SignUpForm
+      component: () => import('../Views/Main.vue'),
     },
     {
       path: '/blog',
@@ -14,12 +14,12 @@ const router = createRouter({
       component: () => import('../Views/Blog.vue'),
     },
     {
-      path: '/BlogDetail',
+      path: '/blog/:id',
       name: 'BlogDetail',
       component: () => import('../Views/BlogDetail.vue'),
+      props: true,
     }
   ],
-
 })
 
-export default router;
+export default router

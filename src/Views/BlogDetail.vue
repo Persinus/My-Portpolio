@@ -1,51 +1,96 @@
 <template>
   <TemplateBlog
-    title="Xây dựng JSON Web APIs với ASP.NET MVC 4 và ASP.NET Web API"
-    cover="https://placehold.co/800x300?text=ASP.NET+API"
-    author="Dương"
-    authorAvatar="https://placehold.co/80x80"
-    date="2015-03-25"
-    :toc="['Giới thiệu', 'Các tính năng mới', 'Kết luận']"
-    warning="Bài đăng này đã không được cập nhật trong 10 năm"
-    :barge="['C#', 'ASP.NET']"
+    v-if="post"
+    :title="post.title"
+    :cover="post.cover"
+    :author="post.author"
+    :authorAvatar="post.authorAvatar"
+    :date="post.date"
+    :toc="post.toc"
+    :warning="post.warning"
+    :barge="post.barge"
+    :related="relatedPosts"
   >
-    <!-- Nội dung bài viết viết HTML chay ở đây -->
-    <p>Dưới đây là một số trong những thứ đó là được cải thiện trong MVC 4.</p>
-
-    <CodeConvert :code="`// Controller mẫu cho ASP.NET Web API
-public class ValuesController : ApiController {
-  public IEnumerable<string> Get() {
-    return new string[] { 'value1',
-`" />
-    <ul>
-      <li>Làm mới và hiện đại hóa các mẫu dự án mặc định</li>
-      <li>Mẫu dự án trên điện thoại di động</li>
-    </ul>
-    <!-- Cuối bài viết -->
-    <RelatedBlogList
-      :author="'Dương'"
-      :related="relatedPosts"
-      :others="otherPosts"
-    />
+    <!-- Đặt class prose ở đây -->
+    <div class="prose max-w-none text-gray-800">
+      <div v-html="post.content"></div>
+    </div>
+    <div v-if="post.code && post.code.length">
+      <CodeConvert
+        v-for="(item, idx) in post.code"
+        :key="idx"
+        :code="item.value"
+        :lang="item.lang"
+      />
+    </div>
   </TemplateBlog>
+  <div v-else class="text-center text-gray-400 py-20">Không tìm thấy bài viết.</div>
 </template>
 
 <script setup>
-import TemplateBlog from '../Service/TemplateBlog.vue';
-import RelatedBlogList from '../Components/RelatedBlogList.vue';
-import CodeConvert from '../Service/CodeConvert.vue';
-import Barge from '../Components/Barge.vue'; // Đảm bảo đúng đường dẫn
+import { ref, watch } from "vue";
+import { useRoute } from "vue-router";
+import TemplateBlog from "../Service/TemplateBlog.vue";
+import CodeConvert from "../Service/CodeConvert.vue";
+import { posts } from "../data/BlogPosts"; // file chứa dữ liệu các bài viết
 
-const relatedPosts = [
-  { id: 1, title: 'Series ASP.NET MVC - Part 3: Sử dụng ViewModel', author: 'Don Nguyen', time: '2 phút đọc', views: '10.0K', comments: 4, bookmarks: 7, likes: 3 },
-  { id: 2, title: 'Kiểu dữ liệu Tuple trong C#', author: 'khoa', time: '4 phút đọc', views: '4.7K', comments: 4, bookmarks: 1, likes: 3 },
-  { id: 3, title: 'Code Review: .NET Application Performance', author: 'Alphongso TrầnAn DũngLạc', time: '6 phút đọc', views: 384, comments: 2, bookmarks: 0, likes: 0 },
-  { id: 4, title: 'C# advanced-Part 1: Introduction', author: 'Mahmud Rahman', time: '1 phút đọc', views: '1.3K', comments: 2, bookmarks: 0, likes: 1 },
-];
-const otherPosts = [
-  { id: 5, title: 'ASP.NET MVC Tip #31 – Truyền dữ liệu đến Master...', author: 'Dương', time: '4 phút đọc', views: 861, comments: 1, bookmarks: 0, likes: 0 },
-  { id: 6, title: 'ASP.NET MVC Tip #30 – Tạo ràng buộc Custom Route', author: 'Dương', time: '8 phút đọc', views: '1.4K', comments: 0, bookmarks: 2, likes: 2 },
-  { id: 7, title: 'ASP.NET MVC Tip #29 – Xây dựng Controller cho Debug...', author: 'Dương', time: '4 phút đọc', views: 242, comments: 0, bookmarks: 0, likes: 0 },
-  { id: 8, title: 'ASP.NET MVC Tip #29 – Xây dựng Controller cho Debug...', author: 'Dương', time: '4 phút đọc', views: 263, comments: 0, bookmarks: 0, likes: 1 },
-];
+const route = useRoute();
+const postId = ref(Number(route.params.id));
+const post = ref(posts.find((p) => p.id === postId.value));
+
+const relatedPosts = ref(posts.filter((p) => p.id !== postId.value).slice(0, 4));
+const otherPosts = ref(
+  posts.filter((p) => p.author === post.value?.author && p.id !== postId.value)
+);
+
+watch(
+  () => route.params.id,
+  (newId) => {
+    postId.value = Number(newId);
+    post.value = posts.find((p) => p.id === postId.value);
+    relatedPosts.value = posts.filter((p) => p.id !== postId.value).slice(0, 4);
+    otherPosts.value = posts.filter(
+      (p) => p.author === post.value?.author && p.id !== postId.value
+    );
+  }
+);
 </script>
+
+<style>
+/* Custom prose styles */
+.prose h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin: 1.5em 0 0.7em 0;
+  color: #1e293b;
+}
+.prose h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 1.2em 0 0.6em 0;
+  color: #2563eb;
+}
+.prose ul,
+.prose ol {
+  margin-left: 1.5em;
+  margin-bottom: 1em;
+  padding-left: 1em;
+}
+.prose ul {
+  list-style: disc inside;
+}
+.prose li {
+  margin-bottom: 0.3em;
+}
+.prose p {
+  margin-bottom: 1em;
+  line-height: 1.7;
+  color: #22223b;
+}
+.prose code {
+  background-color: #f3f4f6;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-family: "Courier New", Courier, monospace;
+}
+</style>
