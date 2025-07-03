@@ -25,6 +25,7 @@
       />
     </div>
   </TemplateBlog>
+
   <div v-else class="text-center text-gray-400 py-20 animate__animated animate__fadeIn">
     Không tìm thấy bài viết.
   </div>
@@ -37,7 +38,6 @@ import { useRoute } from "vue-router";
 import TemplateBlog from "../Service/TemplateBlog.vue";
 import CodeConvert from "../Service/CodeConvert.vue";
 import { posts } from "../data/BlogPosts"; // file chứa dữ liệu các bài viết
-
 const route = useRoute();
 const postId = ref(Number(route.params.id));
 const post = ref(posts.find((p) => p.id === postId.value));

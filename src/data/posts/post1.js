@@ -1,200 +1,355 @@
 export default {
   id: 1,
-  title: 'Bài 1: Finite State Machine (FSM) trong Photon Fusion',
-  cover: 'https://i.pinimg.com/736x/66/e2/fc/66e2fc79cf3db30bc66a88a7007f1e96.jpg',
+  title: 'Bài 1:Cấu Hình Photon Fusion Cho Host Mode',
+  cover: 'https://i.pinimg.com/originals/05/3e/50/053e50e89442c41be8b9f10df1c1250f.gif',
   author: 'Nguyễn Văn Mạnh',
   authorAvatar: 'https://avatars.githubusercontent.com/u/199482290?v=4',
-  date: '9/24/2020 5:27 SA',
-  topic: 'Backend',
+  date: '4/2/2020 5:18 SA',
+  topic: 'Networking',
   toc: [
-    'Tổng quan về FSM',
-    'Cấu trúc cơ bản của FSM trong Fusion',
-    'Cách triển khai FSM',
-    'Cách hoạt động của FSM',
-    'Ưu điểm của FSM trong Fusion',
-    'Gợi ý mở rộng'
+    'Giới Thiệu',
+    'Cài Đặt',
+    'Triển Khai',
+    'Tổ Chức Thư Mục',
+    'Hướng Dẫn Chạy',
+    'Mở Rộng',
+    'Tham Khảo'
   ],
   warning: '',
-  barge: ['Photon Fusion', 'FSM', 'Unity'],
+  barge: ['Photon Fusion', 'Unity', 'Host Mode'],
   content: `
-<p>Finite State Machine (FSM) là một mô hình toán học mạnh mẽ, đặc biệt hữu ích trong việc quản lý trạng thái và hành vi phức tạp của các đối tượng trong game. Trong Photon Fusion, FSM giúp tổ chức và quản lý hành vi của các thực thể trong môi trường mạng một cách hiệu quả.</p>
+<h1>Cấu Hình Photon Fusion Cho Host Mode</h1>
+<p>Hướng dẫn chi tiết cách triển khai <b>Photon Fusion</b> để sử dụng chế độ <b>Host Mode</b> trong Unity. <b>Host Mode</b> cho phép một thiết bị đóng vai trò vừa là máy chủ (host) vừa là client, giúp đơn giản hóa triển khai mạng cho các trò chơi đa người chơi nhỏ.</p>
 <hr>
-<h2>1. Tổng quan về FSM</h2>
-<p>FSM là một mô hình gồm:</p>
+<h2>1. Giới Thiệu</h2>
+<h3>Host Mode là gì?</h3>
+<p><b>Host Mode</b> là chế độ trong Photon Fusion nơi một client hoạt động như một máy chủ, đồng thời quản lý kết nối và đồng bộ dữ liệu cho các client khác.</p>
 <ul>
-  <li><strong>Trạng thái (States):</strong> Các trạng thái của đối tượng.</li>
-  <li><strong>Chuyển tiếp (Transitions):</strong> Quy tắc và điều kiện chuyển giữa các trạng thái.</li>
-  <li><strong>Sự kiện (Events):</strong> Tác nhân kích hoạt sự chuyển tiếp.</li>
-</ul>
-<h3>Tính năng của FSM trong Photon Fusion:</h3>
-<ul>
-  <li><strong>Hỗ trợ nhiều máy trạng thái:</strong> Nhiều FSM có thể chạy song song trên cùng một đối tượng.</li>
-  <li><strong>Cấu trúc phân cấp:</strong> Cho phép tổ chức máy trạng thái con bên trong máy trạng thái cha.</li>
-  <li><strong>Quản lý trạng thái:</strong> Tự động chuyển đổi trạng thái dựa trên điều kiện hoặc ưu tiên.</li>
+  <li>Không cần máy chủ trung tâm.</li>
+  <li>Giảm độ trễ cho host (do không phải thông qua máy chủ bên thứ ba).</li>
+  <li>Thích hợp cho các trò chơi có số lượng người chơi nhỏ.</li>
 </ul>
 <hr>
-<h2>2. Cấu trúc cơ bản của FSM trong Fusion</h2>
-<h3>Thành phần chính:</h3>
+<h2>2. Cài Đặt</h2>
+<h3>Yêu Cầu</h3>
+<ul>
+  <li><b>Unity:</b> 2021.3 LTS hoặc mới hơn.</li>
+  <li><b>Photon App ID:</b> Đăng ký tại <a href="https://dashboard.photonengine.com" target="_blank">Photon Dashboard</a>.</li>
+</ul>
+<h3>Các Bước Cài Đặt</h3>
 <ol>
-  <li><strong>StateMachineController:</strong>
+  <li><b>Cài đặt Photon Fusion SDK</b>
     <ul>
-      <li>Được thêm vào đối tượng game để quản lý và đồng bộ hóa trạng thái qua mạng.</li>
-      <li>Đảm bảo tất cả client đều biết trạng thái hiện tại của đối tượng.</li>
+      <li>Tải Photon Fusion từ Unity Asset Store hoặc <a href="https://dashboard.photonengine.com" target="_blank">Photon Dashboard</a>.</li>
+      <li>Nhập App ID của bạn vào <code>Photon Fusion Wizard</code>.</li>
     </ul>
   </li>
-  <li><strong>StateMachine:</strong>
+  <li><b>Cấu hình Unity</b>
     <ul>
-      <li>Lưu trữ danh sách các trạng thái.</li>
-      <li>Xử lý logic chuyển đổi giữa các trạng thái thông qua các phương pháp như <code>TryActivateState</code> hoặc <code>ForceActivateState</code>.</li>
-    </ul>
-  </li>
-  <li><strong>State:</strong>
-    <ul>
-      <li>Đại diện cho một trạng thái cụ thể và chứa logic liên quan.</li>
-      <li>Kế thừa từ <code>StateBehaviour</code> để tích hợp với Photon Fusion.</li>
+      <li>Tạo một scene mới hoặc sử dụng scene hiện tại trong dự án của bạn.</li>
     </ul>
   </li>
 </ol>
 <hr>
-<h2>3. Cách triển khai FSM</h2>
-<p><strong>Cài đặt FSM trên đối tượng Player:</strong></p>
+<h2>3. Triển Khai</h2>
+<p>Dưới đây là các file cấu hình cơ bản cho Host Mode:</p>
+<ul>
+  <li><b>NetworkManager.cs</b>: Quản lý kết nối mạng và các callback.</li>
+  <li><b>CustomGameManager.cs</b>: Khởi động game và gọi NetworkManager.</li>
+  <li><b>NetworkInputData.cs</b>: Định nghĩa dữ liệu input mạng.</li>
+  <li><b>PlayerSpawner.cs</b>: Xử lý spawn player và input.</li>
+
+</ul>
+
+<p>Hình ảnh minh họa cho cấu hình Photon Fusion trong Host Mode:
+<img src="https://github.com/user-attachments/assets/aba974ad-38f6-47a2-b672-5fad64d5aaf8" alt="Photon Fusion Host Mode" style="width: 100%; max-width: 600px; height: auto;" /></p>
+</p>
+<h2>4. Kết Luận</h2>
+<p>Trong bài viết này, chúng ta đã tìm hiểu cách cấu hình Photon Fusion cho Host Mode trong Unity. Bằng cách sử dụng Host Mode, bạn có thể đơn giản hóa việc triển khai mạng cho các trò chơi đa người chơi nhỏ mà không cần máy chủ trung tâm.</p>
 `,
   code: [
     {
+      file: 'NetworkManager.cs',
       lang: 'csharp',
-      value: `[RequireComponent(typeof(StateMachineController))]
-public class PlayerController : NetworkBehaviour, IStateMachineOwner
+      value: `using Fusion;
+using Fusion.Sockets;
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 {
-    [SerializeField] private SkeletonAnimation skeletonAnimation;
-    [SerializeField] private Rigidbody2D rigidbody2D;
-    public float moveSpeed = 5f;
-    public float jumpForce = 5f;
-    public bool _isGrounded;
+    private NetworkRunner _runner;
 
-    private StateMachine<StateBehaviour> _stateMachine;
-
-    public override void FixedUpdateNetwork()
+    public async void StartGame()
     {
-        if (!HasStateAuthority) return;
+        _runner = gameObject.AddComponent<NetworkRunner>();
+        _runner.ProvideInput = true;
+        _runner.AddCallbacks(this);
 
-        if (_stateMachine.ActiveState is JumpState || _stateMachine.ActiveState is AttackState)
-            return;
+        GameMode mode = GameMode.AutoHostOrClient; // Chế độ tự động host hoặc client
 
-        // Chuyển trạng thái dựa trên đầu vào
-        if (_isGrounded && Input.GetKey(KeyCode.Space))
-            _stateMachine.TryActivateState<JumpState>();
-        else if (_isGrounded && Input.GetKey(KeyCode.F))
-            _stateMachine.TryActivateState<AttackState>();
-        else
-            _stateMachine.TryActivateState<IdleState>();
-    }
-
-    void IStateMachineOwner.CollectStateMachines(List<IStateMachine> stateMachines)
-    {
-        _stateMachine = new StateMachine<StateBehaviour>("PlayerFSM",
-            GetComponent<IdleState>(),
-            GetComponent<JumpState>(),
-            GetComponent<AttackState>());
-        stateMachines.Add(_stateMachine);
-    }
-}`
-    },
-    {
-      lang: 'csharp',
-      value: `public class IdleState : StateBehaviour
-{
-    private PlayerController _player;
-
-    protected override void OnEnterState()
-    {
-        _player = GetComponent<PlayerController>();
-        if (_player.HasStateAuthority)
-            _player.RPC_SetAnimation("idle", true);
-    }
-
-    protected override void OnFixedUpdate()
-    {
-        if (Input.GetKey(KeyCode.Space))
-            Machine.TryActivateState<JumpState>();
-    }
-}`
-    },
-    {
-      lang: 'csharp',
-      value: `public class JumpState : StateBehaviour
-{
-    private PlayerController _player;
-
-    protected override void OnEnterState()
-    {
-        _player = GetComponent<PlayerController>();
-        if (_player.HasStateAuthority)
+        var scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex);
+        await _runner.StartGame(new StartGameArgs()
         {
-            _player.RPC_SetAnimation("jump", true);
-            _player.rigidbody2D.AddForce(Vector2.up * _player.jumpForce, ForceMode2D.Impulse);
+            GameMode = mode,
+            SessionName = "RoomTest", // Đặt tên phòng để các client join cùng phòng này
+            Scene = scene,
+            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
+        });
+    }
+
+    // Callback khi người chơi tham gia vào game
+    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+    {
+
+    }
+
+    // Callback khi người chơi rời khỏi game
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    {
+        Debug.Log($"Player left: {player}");
+    }
+
+    // Callback để gửi dữ liệu đầu vào từ client
+    public void OnInput(NetworkRunner runner, NetworkInput input)
+    {
+        // Dùng để gửi các lệnh đầu vào (Input) đến server
+    }
+
+    // Callback khi thiếu đầu vào từ người chơi
+    public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
+    {
+        Debug.LogWarning($"Missing input from player: {player}");
+    }
+
+    // Callback khi Runner bị tắt
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+    {
+        Debug.Log($"NetworkRunner has shut down. Reason: {shutdownReason}");
+        CleanupResources();
+    }
+    private void CleanupResources(){
+        if (_runner != null)
+        {
+            Destroy(_runner.gameObject); // Hủy NetworkRunner nếu cần
+        }
+        // Xóa các tài nguyên khác (nếu có)
+    }
+    public void OnConnectedToServer(NetworkRunner runner)
+    {
+        Debug.Log("Connected to server");
+    }
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    {
+        Debug.LogWarning($"Disconnected from server: {reason}");
+    }
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
+    {
+        Debug.Log($"Connection request from {request.RemoteAddress}");
+    }
+    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
+    {
+        Debug.LogError($"Connect failed to {remoteAddress}: {reason}");
+    }
+    public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
+    {
+        Debug.Log("Simulation message received");
+    }
+    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
+    {
+    }
+    public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)
+    {
+        Debug.Log("Custom authentication response received");
+    }
+    public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
+    {
+    }
+    public void OnSceneLoadDone(NetworkRunner runner)
+    {
+        Debug.Log("Scene load done");
+    }
+    public void OnSceneLoadStart(NetworkRunner runner)
+    {
+        Debug.Log("Scene load started");
+    }
+    public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
+    {
+        Debug.Log($"Object {obj.name} exited AOI for player {player}");
+    }
+    public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
+    {
+        Debug.Log($"Object {obj.name} entered AOI for player {player}");
+    }
+    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data)
+    {
+        Debug.Log($"Reliable data received from {player}");
+    }
+    public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress)
+    {
+        Debug.Log($"Reliable data progress from {player}: {progress * 100}%");
+    }
+}
+`
+    },
+    {
+      file: 'CustomGameManager.cs',
+      lang: 'csharp',
+      value: `using Fusion;
+using UnityEngine;
+
+public class CustomGameManager : MonoBehaviour
+{
+    [SerializeField] private NetworkManager networkManager;
+    [System.Obsolete("This method is obsolete. Use StartGame() in NetworkManager instead.")]
+    void Start()
+    {
+        if (networkManager != null)
+        {
+            networkManager.StartGame();
+            Debug.Log("Game started with NetworkManager.");
+        }
+        else
+        {
+            Debug.LogError("NetworkManager not found in the scene.");
         }
     }
-
-    protected override void OnFixedUpdate()
-    {
-        if (_player._isGrounded)
-            Machine.TryActivateState<IdleState>();
-    }
-}`
+}
+`
     },
     {
+      file: 'NetworkInputData.cs',
       lang: 'csharp',
-      value: `public class AttackState : StateBehaviour
+      value: `using Fusion;
+using UnityEngine;
+
+public struct NetworkInputData : INetworkInput
 {
-    private PlayerController _player;
-
-    protected override void OnEnterState()
-    {
-        _player = GetComponent<PlayerController>();
-        if (_player.HasStateAuthority)
-            _player.RPC_SetAnimation("attack", true);
-    }
-
-    protected override void OnFixedUpdate()
-    {
-        if (Machine.StateTime > 0.5f) // Hoàn thành hoạt ảnh tấn công
-            Machine.TryActivateState<IdleState>();
-    }
-}`
+    public Vector2 movement; // Di chuyển
+    public bool jump;        // Nhảy
+    public bool attack;      // Tấn công
+}
+`
     },
     {
+      file: 'PlayerSpawner.cs',
       lang: 'csharp',
       value: `using UnityEngine;
-using Fusion.Addons.FSM;
+using UnityEngine.InputSystem;
+using Fusion;
+using Fusion.Sockets;
+using System.Collections.Generic;
 
-public class MoveState : StateBehaviour
+public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
-    private PlayerController _player;
-
-    protected override void OnEnterState()
+    [SerializeField] private NetworkPrefabRef playerPrefab;
+    [SerializeField] InputSystem_Actions inputActions;
+    private Dictionary<PlayerRef, NetworkObject> spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
+  
+    void Start()
     {
-        _player = GetComponent<PlayerController>();
-        if (_player.HasStateAuthority)
+        inputActions = new InputSystem_Actions();
+        inputActions.Enable();
+    }
+
+    public void OnInput(NetworkRunner runner, NetworkInput input)
+    {
+        var inputData = new NetworkInputData
         {
-            _player.RPC_SetAnimation("move", true); // Đồng bộ hoạt ảnh di chuyển cho tất cả client
+            movement = inputActions.Player.Move.ReadValue<Vector2>(),
+            jump = inputActions.Player.Jump.triggered,
+            attack = inputActions.Player.Attack.triggered
+        };
+        input.Set(inputData);
+    }
+
+    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+    {
+        if (runner.IsServer) // chỉ server/host spawn
+        {
+            Debug.Log($"Player {player} joined. Spawning character...");
+            Vector2 spawnPosition = new Vector2((player.RawEncoded % runner.Config.Simulation.PlayerCount) * 3, 10);
+            var playerObject = runner.Spawn(playerPrefab, spawnPosition, Quaternion.identity, player);
+            Debug.Log($"Spawned for PlayerRef: {player} - InputAuthority: {playerObject.InputAuthority}");
+        }
+        else
+        {
+            Debug.Log($"Player {player} joined but not spawning character as client.");
         }
     }
-    protected override void OnFixedUpdate()
-    {
-        if (!_player.HasStateAuthority || !GetInput(out _player._inputData))
-            return;
-        Vector2 moveDirection = new Vector2(_player._inputData.movement.x * _player.moveSpeed, _player.GetComponent<Rigidbody2D>().linearVelocity.y);
-        _player.GetComponent<Rigidbody2D>().linearVelocity = moveDirection;
 
-        if (!_player.HasMovementInput())
-            Machine.TryActivateState<IdleState>();
-        else if (_player.IsJumping())
-            Machine.TryActivateState<JumpState>();
-        else if (_player.IsAttacking())
-            Machine.TryActivateState<AttackState>();   
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    {
+        if (spawnedCharacters.TryGetValue(player, out NetworkObject playerObject))
+        {
+            runner.Despawn(playerObject);
+            spawnedCharacters.Remove(player);
+        }
     }
-}`
+
+    // Các callback khác giữ nguyên như cũ...
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
+    public void OnConnectedToServer(NetworkRunner runner) { }
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
+    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
+    {
+        Debug.LogError($"Connect failed to {remoteAddress}: {reason}");
+    }
+    public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
+    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, System.ArraySegment<byte> data) { }
+    public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) { }
+    public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
+    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
+    public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
+    public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
+    public void OnSceneLoadDone(NetworkRunner runner) { }
+    public void OnSceneLoadStart(NetworkRunner runner) { }
+    public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
+    public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
+}
+`
     }
   ],
-
-}
+  content2: `
+<hr>
+<h2>4. Tổ Chức Thư Mục</h2>
+<p>Sắp xếp dự án của bạn như sau:</p>
+<pre>
+/PhotonHostMode
+  NetworkManager.cs
+  CustomGameManager.cs
+  NetworkInputData.cs
+  PlayerSpawner.cs
+</pre>
+<hr>
+<h2>5. Hướng Dẫn Chạy</h2>
+<ol>
+  <li>Thêm <code>CustomGameManager</code> vào một GameObject trong Scene chính.</li>
+  <li>Chạy game trong Unity Editor.
+    <ul>
+      <li>Nếu cấu hình đúng, Photon Fusion sẽ tạo một phòng với tên <b>RoomTest</b>.</li>
+      <li>Các client khác có thể kết nối với host thông qua App ID của bạn.</li>
+    </ul>
+  </li>
+</ol>
+<hr>
+<h2>6. Mở Rộng</h2>
+<ul>
+  <li><b>Tạo UI:</b> Thêm giao diện để người chơi nhập tên phòng hoặc chọn vai trò (host/client).</li>
+  <li><b>Xử lý ngắt kết nối:</b> Thêm logic để xử lý khi host thoát hoặc client bị mất kết nối.</li>
+  <li><b>Đồng bộ dữ liệu:</b> Sử dụng <code>[Networked]</code> để đồng bộ biến hoặc trạng thái giữa các client.</li>
+</ul>
+<hr>
+<h2>7. Tham Khảo</h2>
+<ul>
+  <li><a href="https://doc.photonengine.com/fusion" target="_blank">Photon Fusion Documentation</a></li>
+  <li><a href="https://dashboard.photonengine.com" target="_blank">Photon Dashboard</a></li>
+  <li><a href="https://unity.com/learn" target="_blank">Unity Integration Guide</a></li>
+</ul>
+<h3><b>Tác giả</b></h3>
+<p><b>Pesinus</b><br>
+Liên hệ: <a href="mailto:nguyenmanh2004devgame@gmail.com">nguyenmanh2004devgame@gmail.com</a></p>
+`}

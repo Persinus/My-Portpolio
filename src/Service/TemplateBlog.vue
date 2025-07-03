@@ -48,7 +48,7 @@
           v-if="cover"
           :src="cover"
           :alt="title"
-          class="w-full h-56 object-cover rounded mb-6 shadow"
+          class="w-full h-72 object-cover rounded mb-6 shadow"
         />
         <!-- Thông báo -->
         <div
@@ -95,12 +95,14 @@
       </aside>
     </div>
   </section>
+  <ContactSection />
 </template>
 
 <script setup>
 import Barge from "../components/Barge.vue";
 import { ref, onMounted, onUnmounted, nextTick, watch } from "vue";
 import { useRoute } from "vue-router";
+import ContactSection from "../components/ContactSection.vue";
 
 const route = useRoute();
 
