@@ -1,4 +1,5 @@
 <template>
+  <Header />
   <TemplateBlog
     v-if="post"
     :title="post.title"
@@ -11,11 +12,11 @@
     :barge="post.barge"
     :related="relatedPosts"
   >
-    <!-- Đặt class prose ở đây -->
-    <div class="prose max-w-none text-gray-800">
+    <!-- Thêm hiệu ứng cho tiêu đề và nội dung -->
+    <div class="prose prose-invert max-w-none animate__animated animate__fadeIn">
       <div v-html="post.content"></div>
     </div>
-    <div v-if="post.code && post.code.length">
+    <div v-if="post.code && post.code.length" class="animate__animated animate__fadeInUp">
       <CodeConvert
         v-for="(item, idx) in post.code"
         :key="idx"
@@ -24,11 +25,14 @@
       />
     </div>
   </TemplateBlog>
-  <div v-else class="text-center text-gray-400 py-20">Không tìm thấy bài viết.</div>
+  <div v-else class="text-center text-gray-400 py-20 animate__animated animate__fadeIn">
+    Không tìm thấy bài viết.
+  </div>
 </template>
 
 <script setup>
 import { ref, watch } from "vue";
+import Header from "../components/Header.vue";
 import { useRoute } from "vue-router";
 import TemplateBlog from "../Service/TemplateBlog.vue";
 import CodeConvert from "../Service/CodeConvert.vue";
@@ -92,5 +96,19 @@ watch(
   padding: 0.2em 0.4em;
   border-radius: 0.25rem;
   font-family: "Courier New", Courier, monospace;
+}
+.prose-invert h1 {
+  color: #facc15;
+}
+.prose-invert h2 {
+  color: #60a5fa;
+}
+.prose-invert p,
+.prose-invert li {
+  color: #e5e7eb;
+}
+.prose-invert code {
+  background-color: #1e293b;
+  color: #facc15;
 }
 </style>

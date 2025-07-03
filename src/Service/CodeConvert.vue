@@ -55,4 +55,11 @@ watch(() => props.lang, highlight);
 
 <style scoped>
 /* Có thể custom thêm nếu muốn */
+pre,
+pre code {
+  white-space: pre-wrap !important; /* Cho phép xuống dòng tự động */
+  word-break: break-word !important; /* Ngắt từ nếu quá dài */
+  overflow-x: auto;
+  font-family: "Fira Mono", "Consolas", "Menlo", monospace;
+}
 </style>
