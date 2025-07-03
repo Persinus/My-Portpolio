@@ -7,11 +7,11 @@
 </template>
 
 <script setup>
-import Header from "../Components/Header.vue";
-import AboutMe from "../Components/AboutMe.vue";
-import GameList from "../Components/GameList.vue";
+import Header from "../components/Header.vue";
+import AboutMe from "../components/AboutMe.vue";
+import GameList from "../components/GameList.vue";
 
-import ContactSection from "../Components/ContactSection.vue";
+import ContactSection from "../components/ContactSection.vue";
 </script>
 
 <style scoped>
