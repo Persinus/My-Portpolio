@@ -6,7 +6,7 @@
       <!-- Danh sách bài viết (70%) -->
       <div class="w-full md:w-[70%]">
         <div
-          v-for="post in filteredPosts"
+          v-for="post in pagedPosts"
           :key="post.id"
           class="bg-white/5 rounded-xl shadow p-5 mb-6 flex gap-4"
         >
@@ -47,6 +47,15 @@
         <div v-if="filteredPosts.length === 0" class="text-center text-gray-400 mt-8">
           Không tìm thấy bài viết phù hợp.
         </div>
+        <!-- Phân trang -->
+        <div class="mt-4">
+          <Pagination
+            v-if="totalPages > 1"
+            :current-page="currentPage"
+            :total-pages="totalPages"
+            @update:page="(p) => (currentPage = p)"
+          />
+        </div>
       </div>
       <!-- Thanh tìm kiếm (30%) -->
       <div class="w-full md:w-[30%] md:pl-4">
@@ -75,8 +84,11 @@
 <script setup>
 import { ref, computed } from "vue";
 import { posts } from "../data/BlogPosts";
+import Pagination from "./Pagination.vue";
 
 const keyword = ref("");
+const currentPage = ref(1);
+const pageSize = 5;
 
 const filteredPosts = computed(() =>
   posts.filter(
@@ -86,6 +98,15 @@ const filteredPosts = computed(() =>
         post.barge.some((b) => b.toLowerCase().includes(keyword.value.toLowerCase())))
   )
 );
+
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(filteredPosts.value.length / pageSize))
+);
+
+const pagedPosts = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  return filteredPosts.value.slice(start, start + pageSize);
+});
 </script>
 
 <style scoped>
