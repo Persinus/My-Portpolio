@@ -65,7 +65,7 @@
         <div class="mt-8">
           <h3 class="font-bold mb-2 text-yellow-400">Bài viết liên quan</h3>
           <ul>
-            <li v-for="post in related" :key="post.id" class="mb-2">
+            <li v-for="post in related.slice(0, 4)" :key="post.id" class="mb-2">
               <router-link :to="`/blog/${post.id}`" class="text-blue-400 hover:underline">
                 {{ post.title }}
               </router-link>
