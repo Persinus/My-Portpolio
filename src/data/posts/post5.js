@@ -106,7 +106,7 @@ export default {
   code: [
     {
       file: 'appsettings.json',
-      lang: 'json',
+      lang: 'Cloudinary.cs',
       value: `{
   "CloudinarySettings": {
     "CloudName": "your_cloud_name",
