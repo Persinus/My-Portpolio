@@ -11,6 +11,8 @@ import post10 from './posts/post10'
 import post11 from './posts/post11'
 import post12 from './posts/post12'
 import post13 from './posts/post13'
+import post14 from './posts/post14'
+import post15 from './posts/post15'
 
 // import post5 from './posts/post5'
 
@@ -31,5 +33,7 @@ export const posts = [
   post11,
   post12,
   post13,
+  post14,
+  post15,
   // ... các post khác
 ]
