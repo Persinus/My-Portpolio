@@ -18,40 +18,39 @@ export default {
   warning: '',
   barge: ['Unity', 'Asset', 'GameDev', 'Free', 'UnityPackage'],
   content: `
-  
 <p>Đây là phần đầu tiên trong chuỗi tổng hợp các asset Unity đáng giá, cực phù hợp cho những ai làm game 2D/3D phong cách hoạt hình hoặc cần tối ưu hệ thống.</p>
 
 <h2>1️⃣ 2D Laser Beams v1.0</h2>
-<table><tr>
-<td><img src="https://assetstorev1-prd-cdn.unity3d.com/key-image/92058b8f-37c9-4081-8c24-4e11f214a80c.webp" width="100%"/></td>
-<td><img src="https://assetstorev1-prd-cdn.unity3d.com/package-screenshot/6463b78d-0dc2-4dc8-bc5e-0aa88bd5165e.webp" width="100%"/></td>
-</tr></table>
+<div style="display: flex; gap: 8px;">
+  <img src="https://assetstorev1-prd-cdn.unity3d.com/key-image/92058b8f-37c9-4081-8c24-4e11f214a80c.webp" style="width:50%;object-fit:cover;" />
+  <img src="https://assetstorev1-prd-cdn.unity3d.com/package-screenshot/6463b78d-0dc2-4dc8-bc5e-0aa88bd5165e.webp" style="width:50%;object-fit:cover;" />
+</div>
 <p>🎯 Hiệu ứng laser 2D cực đẹp</p>
 <p>🔗 <a href="https://www.mediafire.com/file/6gu8nbfrnmctnc1/2D_Laser_Beams_v1.0.unitypackage/file" target="_blank">Tải tại đây</a></p>
 
 <h2>2️⃣ A* Pathfinding Project Pro v5.1.2</h2>
-<table><tr>
-<td><img src="https://assetstorev1-prd-cdn.unity3d.com/key-image/a5c0fc6f-8b98-432f-872c-92182f31b1a0.webp" width="100%"/></td>
-<td><img src="https://assetstorev1-prd-cdn.unity3d.com/package-screenshot/91b23f22-5fa7-4cf4-ad3b-a87989a542e8.webp" width="100%"/></td>
-</tr></table>
+<div style="display: flex; gap: 8px;">
+  <img src="https://assetstorev1-prd-cdn.unity3d.com/key-image/a5c0fc6f-8b98-432f-872c-92182f31b1a0.webp" style="width:50%;object-fit:cover;" />
+  <img src="https://assetstorev1-prd-cdn.unity3d.com/package-screenshot/91b23f22-5fa7-4cf4-ad3b-a87989a542e8.webp" style="width:50%;object-fit:cover;" />
+</div>
 <p>🤖 Hệ thống AI tìm đường mạnh mẽ, hỗ trợ grid/mesh/point</p>
 <p>🔗 <a href="https://www.mediafire.com/file/u3n5zji86hz3lst/A_Pathfinding_Project_Pro_v5.1.2.unitypackage/file" target="_blank">Tải tại đây</a></p>
 
 <h2>3️⃣ Advanced Culling System 2 Revamped</h2>
-<table><tr>
-<td><img src="https://assetstorev1-prd-cdn.unity3d.com/package-screenshot/6812c0fb-49b4-4782-acac-ca410298e340.webp" width="100%"/></td>
-<td><img src="https://assetstorev1-prd-cdn.unity3d.com/package-screenshot/95848ac2-abb2-4b31-908f-3d0b01face96.webp" width="100%"/></td>
-</tr></table>
+<div style="display: flex; gap: 8px;">
+  <img src="https://assetstorev1-prd-cdn.unity3d.com/package-screenshot/6812c0fb-49b4-4782-acac-ca410298e340.webp" style="width:50%;object-fit:cover;" />
+  <img src="https://assetstorev1-prd-cdn.unity3d.com/package-screenshot/95848ac2-abb2-4b31-908f-3d0b01face96.webp" style="width:50%;object-fit:cover;" />
+</div>
 <p>🧠 Tối ưu hiệu suất bằng cách ẩn các đối tượng ngoài tầm nhìn</p>
 <p>🔗 <a href="https://www.mediafire.com/file/018oqsiljpugl1c/Advanced_Culling_System_2_Revamped_and_Boosted_Up_v1.0.4.unitypackage/file" target="_blank">Tải tại đây</a></p>
 
 <h2>4️⃣ Advanced PlayerPrefs Window v2.1.0</h2>
-<table><tr>
-<td><img src="https://assetstorev1-prd-cdn.unity3d.com/package-screenshot/f368e3c8-e203-463c-b4fd-d00330c4f7bf.webp" width="100%"/></td>
-<td><img src="https://assetstorev1-prd-cdn.unity3d.com/package-screenshot/0d7236b0-f442-4c6f-8d61-37d474f34a99.webp" width="100%"/></td>
-</tr></table>
+<div style="display: flex; gap: 8px;">
+  <img src="https://assetstorev1-prd-cdn.unity3d.com/package-screenshot/f368e3c8-e203-463c-b4fd-d00330c4f7bf.webp" style="width:50%;object-fit:cover;" />
+  <img src="https://assetstorev1-prd-cdn.unity3d.com/package-screenshot/0d7236b0-f442-4c6f-8d61-37d474f34a99.webp" style="width:50%;object-fit:cover;" />
+</div>
 <p>🔧 Giao diện quản lý PlayerPrefs ngay trong Editor</p>
 <p>🔗 <a href="https://www.mediafire.com/file/ps0uwpd3kcpm4qm/Advanced_PlayerPrefs_Window_v2.1.0.unitypackage/file" target="_blank">Tải tại đây</a></p>
-`,      
+`,
   code: []
 }
