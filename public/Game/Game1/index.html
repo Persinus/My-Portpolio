@@ -10,7 +10,7 @@
   </head>
   <body>
     <div id="unity-container">
-      <canvas id="unity-canvas" width=1067 height=600 tabindex="-1"></canvas>
+      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
@@ -60,9 +60,9 @@
       var loaderUrl = buildUrl + "/gameTest.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/gameTest.data.br",
-        frameworkUrl: buildUrl + "/gameTest.framework.js.br",
-        codeUrl: buildUrl + "/gameTest.wasm.br",
+        dataUrl: buildUrl + "/gameTest.data.unityweb",
+        frameworkUrl: buildUrl + "/gameTest.framework.js.unityweb",
+        codeUrl: buildUrl + "/gameTest.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Hole 3d",

@@ -1,9 +1,9 @@
 const cacheName = "DefaultCompany-Hole 3d-0.1.0";
 const contentToCache = [
     "Build/gameTest.loader.js",
-    "Build/gameTest.framework.js.br",
-    "Build/gameTest.data.br",
-    "Build/gameTest.wasm.br",
+    "Build/gameTest.framework.js.unityweb",
+    "Build/gameTest.data.unityweb",
+    "Build/gameTest.wasm.unityweb",
     "TemplateData/style.css"
 
 ];
