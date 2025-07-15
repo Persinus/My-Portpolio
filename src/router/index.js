@@ -18,6 +18,17 @@ const router = createRouter({
       name: 'BlogDetail',
       component: () => import('../Views/BlogDetail.vue'),
       props: true,
+    },
+    {
+      path: '/game',
+      name: 'GameList',
+      component: () => import('../Views/GameList.vue'),
+    },
+    {
+      path: '/game/:id',
+      name: 'GameInterface',
+      component: () => import('../Views/GameInterface.vue'),
+      props: true
     }
   ],
 })
