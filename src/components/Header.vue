@@ -24,6 +24,13 @@
         </li>
         <li>
           <router-link
+            to="/game"
+            class="hover:text-yellow-400 transition-colors duration-200"
+            >Trò chơi</router-link
+          >
+        </li>
+        <li>
+          <router-link
             to="/blog"
             class="hover:text-yellow-400 transition-colors duration-200"
             >Blog</router-link
