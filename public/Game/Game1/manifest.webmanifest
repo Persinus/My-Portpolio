@@ -1,0 +1,15 @@
+{
+    "name": "Hole 3d",
+    "short_name": "Hole 3d",
+    "start_url": "index.html",
+    "display": "fullscreen",
+    "background_color": "#80394A",
+    "theme_color": "#000",
+    "description": "Persinus",
+    "icons": [{
+      "src": "TemplateData/icons/unity-logo-dark.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }]
+  }
