@@ -7,7 +7,6 @@ import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -64,16 +63,18 @@ export function ThemeToggle() {
         </AlertDialogHeader>
         <div className="py-4 space-y-2">
             {themes.map((t) => (
-                 <AlertDialogAction key={t.name} asChild className="w-full justify-start">
-                    <button onClick={() => setTheme(t.name)}>
+                 <AlertDialogCancel key={t.name} asChild>
+                    <Button onClick={() => setTheme(t.name)} variant="outline" className="w-full justify-start">
                         {t.icon}
                         <span>{t.label}</span>
-                    </button>
-                </AlertDialogAction>
+                    </Button>
+                </AlertDialogCancel>
             ))}
         </div>
         <AlertDialogFooter>
-          <AlertDialogCancel>Stay</AlertDialogCancel>
+          <AlertDialogCancel asChild>
+            <Button variant="ghost">Stay</Button>
+          </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
