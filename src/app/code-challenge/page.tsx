@@ -152,7 +152,7 @@ export default function CodeChallengePage() {
                          <Skeleton className="h-4 w-1/2" />
                     </div>
                 ) : (
-                    <pre><code className="font-code text-sm">{challenge?.codeSnippet}</code></pre>
+                    <pre className="whitespace-pre-wrap"><code className="font-code text-sm">{challenge?.codeSnippet}</code></pre>
                 )}
               </div>
             </div>
