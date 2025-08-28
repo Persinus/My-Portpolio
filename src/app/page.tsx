@@ -44,8 +44,8 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section className="mb-20">
-          <div className="grid items-center gap-12 lg:grid-cols-10">
-            <div className="order-2 lg:order-1 lg:col-span-7">
+          <div className="grid items-center gap-12 md:grid-cols-10">
+            <div className="order-2 md:order-1 md:col-span-7">
                 <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl lg:text-6xl">
                     Xin chào! Tôi là <span className="text-primary glow-primary">Persinus</span>
                 </h1>
@@ -64,7 +64,7 @@ export default function HomePage() {
                     </Button>
                 </div>
             </div>
-            <div className="order-1 flex justify-center lg:order-2 lg:col-span-3">
+            <div className="order-1 flex justify-center md:order-2 md:col-span-3">
                 <AnimatedAvatar />
             </div>
           </div>

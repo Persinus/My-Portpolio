@@ -43,14 +43,14 @@ export default function PortfolioPage() {
           </div>
         </TabsContent>
         <TabsContent value="inventory">
-           <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
-                <div className="lg:col-span-3 flex justify-center items-start">
+           <div className="grid grid-cols-1 md:grid-cols-10 gap-8">
+                <div className="md:col-span-3 flex justify-center items-start">
                    <div className="sticky top-24">
                      <AnimatedAvatar />
                      <h3 className="text-center mt-4 font-headline text-2xl">Player</h3>
                    </div>
                 </div>
-                <div className="lg:col-span-7">
+                <div className="md:col-span-7">
                     <InventoryGrid />
                 </div>
            </div>
