@@ -253,8 +253,8 @@ export default function Game2048Page() {
                                         >
                                             <Tile value={cell ?? 0} />
                                         </motion.div>
-                                    ))
-                                )
+                                    </AnimatePresence>
+                                ))
                             )}
                         </div>
                     </div>
