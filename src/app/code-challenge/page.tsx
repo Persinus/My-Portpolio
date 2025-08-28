@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Lightbulb, Code, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const topics = [
   "JavaScript Closures",
@@ -163,6 +164,15 @@ export default function CodeChallengePage() {
                     renderChoices()
                 )}
             </div>
+            {gameState === 'answered' && challenge?.explanation && (
+                <Alert>
+                    <Lightbulb className="h-4 w-4" />
+                    <AlertTitle>Explanation</AlertTitle>
+                    <AlertDescription>
+                        {challenge.explanation}
+                    </AlertDescription>
+                </Alert>
+            )}
           </CardContent>
         </Card>
       </div>

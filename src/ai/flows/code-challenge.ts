@@ -21,6 +21,7 @@ const CodeChallengeOutputSchema = z.object({
   question: z.string().describe('A clear, specific question about the provided code snippet.'),
   choices: z.array(z.string()).length(4).describe('An array of exactly four multiple-choice answers. One must be correct.'),
   correctAnswer: z.string().describe('The correct answer from the choices array.'),
+  explanation: z.string().describe('A brief and clear explanation of why the correct answer is right.'),
 });
 export type CodeChallengeOutput = z.infer<typeof CodeChallengeOutputSchema>;
 
@@ -41,6 +42,7 @@ const codeChallengePrompt = ai.definePrompt({
   2.  A specific, multiple-choice question about the code snippet's behavior, output, or concept.
   3.  Exactly four possible answers (choices).
   4.  A clear designation of the single correct answer.
+  5.  A brief, easy-to-understand explanation for why the correct answer is right.
 
   Ensure the question is not ambiguous and the correct answer is definitively right based on the code snippet. The incorrect answers should be plausible but flawed.
   `,
