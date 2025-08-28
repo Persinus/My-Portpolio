@@ -4,37 +4,34 @@
 import * as React from 'react';
 import { Bot, ScrollText, Wand2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
-
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { Skeleton } from './ui/skeleton';
-import { cn } from '@/lib/utils';
-import { buttonVariants } from './ui/button';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 
 const themes = [
   {
     name: 'theme-fantasy',
     label: 'Fantasy',
-    icon: <Wand2 className="h-5 w-5" />,
+    icon: <Wand2 className="mr-2 h-4 w-4" />,
   },
   {
     name: 'theme-cyberpunk',
     label: 'Cyberpunk',
-    icon: <Bot className="h-5 w-5" />,
+    icon: <Bot className="mr-2 h-4 w-4" />,
   },
   {
     name: 'theme-dungeon',
     label: 'Dungeon',
-    icon: <ScrollText className="h-5 w-5" />,
+    icon: <ScrollText className="mr-2 h-4 w-4" />,
   },
 ];
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -42,39 +39,25 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return (
-        <div className="flex items-center gap-1 rounded-full border bg-background p-1">
-            {themes.map((t) => (
-                <Skeleton key={t.name} className="h-8 w-8 rounded-full" />
-            ))}
-        </div>
-    )
+    return <div className="h-10 w-10" />;
   }
 
   return (
-    <TooltipProvider>
-      <div className="flex items-center gap-1 rounded-full border bg-background p-1">
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon">
+          <Wand2 className="h-5 w-5" />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
         {themes.map((t) => (
-          <Tooltip key={t.name} delayDuration={0}>
-            <TooltipTrigger asChild>
-              <button
-                aria-label={`Switch to ${t.label} theme`}
-                className={cn(
-                    buttonVariants({ variant: 'ghost', size: 'icon' }),
-                    'h-8 w-8 rounded-full',
-                    theme === t.name ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'
-                )}
-                onClick={() => setTheme(t.name)}
-              >
-                {t.icon}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{t.label}</p>
-            </TooltipContent>
-          </Tooltip>
+           <DropdownMenuItem key={t.name} onClick={() => setTheme(t.name)}>
+             {t.icon}
+             <span>{t.label}</span>
+           </DropdownMenuItem>
         ))}
-      </div>
-    </TooltipProvider>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

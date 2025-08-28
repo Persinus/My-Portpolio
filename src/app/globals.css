@@ -136,3 +136,7 @@
 .glow-accent-hover:hover {
   filter: drop-shadow(0 0 10px hsl(var(--accent)));
 }
+
+.filter-primary {
+  filter: invert(34%) sepia(91%) saturate(3207%) hue-rotate(259deg) brightness(97%) contrast(106%);
+}

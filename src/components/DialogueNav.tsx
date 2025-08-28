@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useSound } from '@/hooks/useSound';
 import { motion } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from './ui/button';
+import Image from 'next/image';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -51,7 +51,11 @@ export default function DialogueNav() {
                                         'px-4 py-2 text-sm font-semibold transition-colors hover:text-primary focus-visible:ring-0 focus-visible:ring-offset-0 focus:bg-primary/10',
                                         isChallengePage ? 'text-primary' : 'text-muted-foreground'
                                     )}>
-                                        {isChallengePage && <motion.div layoutId="selector" className="absolute left-0"><ChevronRight className="h-5 w-5"/></motion.div>}
+                                        {isChallengePage && (
+                                           <motion.div layoutId="selector" className="absolute -left-1">
+                                               <Image src="/hand-cursor.svg" alt="selector" width={24} height={24} className="filter-primary" />
+                                           </motion.div>
+                                        )}
                                         <span className="ml-5">{label}</span>
                                     </Button>
                                 </DropdownMenuTrigger>
@@ -82,7 +86,11 @@ export default function DialogueNav() {
                                 isActive ? 'text-primary' : 'text-muted-foreground'
                             )}
                         >
-                            {isActive && <motion.div layoutId="selector" className="absolute left-0"><ChevronRight className="h-5 w-5"/></motion.div>}
+                            {isActive && (
+                                <motion.div layoutId="selector" className="absolute -left-1">
+                                    <Image src="/hand-cursor.svg" alt="selector" width={24} height={24} className="filter-primary" />
+                                </motion.div>
+                            )}
                             <span className="ml-5">{label}</span>
                         </Link>
                     </li>
