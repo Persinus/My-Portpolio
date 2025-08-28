@@ -72,13 +72,11 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
               </Link>
             </Button>
           )}
-          {project.demoLink && (
-            <Button asChild className="glow-accent">
-              <Link href={project.demoLink} target="_blank" rel="noopener noreferrer">
-                <Play /> Live Demo
+          <Button asChild className="glow-accent">
+              <Link href={`/portfolio/${project.slug}`}>
+                <Play /> {project.gameLink ? "Play Game" : "View Details"}
               </Link>
             </Button>
-          )}
         </CardFooter>
       </Card>
     </motion.div>

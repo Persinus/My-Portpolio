@@ -14,7 +14,7 @@ export default function PortfolioPage() {
       </div>
       <div className="grid gap-8 md:grid-cols-2">
         {projects.map((project, index) => (
-          <ProjectCard key={project.name} project={project} index={index} />
+          <ProjectCard key={project.slug} project={project} index={index} />
         ))}
       </div>
     </div>
