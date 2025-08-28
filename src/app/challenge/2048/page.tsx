@@ -1,11 +1,11 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ArrowRight, ArrowUp, ArrowDown, RotateCw } from 'lucide-react';
+import { RotateCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -33,14 +33,12 @@ const TILE_LEVELS = [
 const getTileInfo = (value: number) => TILE_LEVELS.find(t => t.level === value) || TILE_LEVELS[0];
 
 const Tile = ({ value }: { value: number }) => {
-  if (value === 0) return <div className="h-24 w-24 rounded-lg bg-muted/50"></div>;
-  
   const tileInfo = getTileInfo(value);
   const textColor = tileInfo.name === 'Next.js' ? '#000000' : '#FFFFFF';
 
   return (
     <div
-      className="h-24 w-24 flex items-center justify-center rounded-lg font-bold text-2xl"
+      className="h-full w-full flex items-center justify-center rounded-lg font-bold text-2xl"
       style={{ backgroundColor: tileInfo.color, color: textColor, textShadow: '1px 1px 2px rgba(0,0,0,0.4)' }}
     >
       <Image src={tileInfo.icon} alt={tileInfo.name} width={48} height={48} className="drop-shadow-lg" />
@@ -50,18 +48,18 @@ const Tile = ({ value }: { value: number }) => {
 
 const GRID_SIZE = 4;
 
-const generateInitialGrid = (): (number | null)[][] => {
-    let grid: (number | null)[][] = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(null));
+const generateInitialGrid = (): number[][] => {
+    let grid: number[][] = Array(GRID_SIZE).fill(0).map(() => Array(GRID_SIZE).fill(0));
     grid = addRandomTile(grid);
     grid = addRandomTile(grid);
     return grid;
 };
 
-const getEmptyCells = (grid: (number | null)[][]) => {
+const getEmptyCells = (grid: number[][]) => {
     const cells: { row: number; col: number }[] = [];
     for (let i = 0; i < GRID_SIZE; i++) {
         for (let j = 0; j < GRID_SIZE; j++) {
-            if (grid[i][j] === null) {
+            if (grid[i][j] === 0) {
                 cells.push({ row: i, col: j });
             }
         }
@@ -69,7 +67,7 @@ const getEmptyCells = (grid: (number | null)[][]) => {
     return cells;
 };
 
-const addRandomTile = (grid: (number | null)[][]): (number | null)[][] => {
+const addRandomTile = (grid: number[][]): number[][] => {
     const emptyCells = getEmptyCells(grid);
     if (emptyCells.length === 0) return grid;
 
@@ -80,67 +78,7 @@ const addRandomTile = (grid: (number | null)[][]): (number | null)[][] => {
 };
 
 
-const move = (grid: (number | null)[][], direction: 'up' | 'down' | 'left' | 'right') => {
-    let newGrid = JSON.parse(JSON.stringify(grid));
-    let scoreToAdd = 0;
-    let moved = false;
-
-    const rotate = (matrix: (number|null)[][]) => {
-        const n = matrix.length;
-        const newMatrix = Array(n).fill(null).map(() => Array(n).fill(null));
-        for (let i = 0; i < n; i++) {
-            for (let j = 0; j < n; j++) {
-                newMatrix[i][j] = matrix[n - j - 1][i];
-            }
-        }
-        return newMatrix;
-    };
-    
-    const slideAndMerge = (row: (number|null)[]) => {
-        const newRow = row.filter(cell => cell !== null);
-        for (let i = 0; i < newRow.length - 1; i++) {
-            if (newRow[i] === newRow[i + 1]) {
-                const newValue = (newRow[i] ?? 0) * 2;
-                newRow[i] = newValue;
-                scoreToAdd += newValue;
-                newRow.splice(i + 1, 1);
-            }
-        }
-        while (newRow.length < GRID_SIZE) {
-            newRow.push(null);
-        }
-        return newRow;
-    }
-
-    const rotations = {
-        left: 0,
-        up: 1,
-        right: 2,
-        down: 3
-    };
-
-    const numRotations = rotations[direction];
-
-    for(let i=0; i < numRotations; i++) {
-        newGrid = rotate(newGrid);
-    }
-    
-    for (let i = 0; i < GRID_SIZE; i++) {
-        const originalRow = [...newGrid[i]];
-        newGrid[i] = slideAndMerge(newGrid[i]);
-        if (JSON.stringify(originalRow) !== JSON.stringify(newGrid[i])) {
-            moved = true;
-        }
-    }
-
-    for(let i=0; i < (4 - numRotations) % 4; i++) {
-        newGrid = rotate(newGrid);
-    }
-    
-    return { newGrid, scoreToAdd, moved };
-};
-
-const isGameOver = (grid: (number | null)[][]) => {
+const isGameOver = (grid: number[][]): boolean => {
     if (getEmptyCells(grid).length > 0) return false;
     for (let i = 0; i < GRID_SIZE; i++) {
         for (let j = 0; j < GRID_SIZE; j++) {
@@ -153,40 +91,52 @@ const isGameOver = (grid: (number | null)[][]) => {
 };
 
 export default function Game2048Page() {
-    const [grid, setGrid] = useState<(number | null)[][]>([]);
+    const [grid, setGrid] = useState<number[][]>([]);
     const [score, setScore] = useState(0);
     const [gameOver, setGameOver] = useState(false);
     const [win, setWin] = useState(false);
+    const gridRef = useRef<HTMLDivElement>(null);
 
-    const handleKeyDown = useCallback((e: KeyboardEvent) => {
-        if (gameOver || win || grid.length === 0) return;
+    const handleDrop = (
+        from: { row: number, col: number },
+        to: { row: number, col: number }
+    ) => {
+        if (from.row === to.row && from.col === to.col) return;
 
-        let direction: 'up' | 'down' | 'left' | 'right' | null = null;
-        switch (e.key) {
-            case 'ArrowUp': direction = 'up'; break;
-            case 'ArrowDown': direction = 'down'; break;
-            case 'ArrowLeft': direction = 'left'; break;
-            case 'ArrowRight': direction = 'right'; break;
+        const newGrid = grid.map(r => [...r]);
+        const fromValue = newGrid[from.row][from.col];
+        const toValue = newGrid[to.row][to.col];
+
+        if (fromValue === 0) return;
+
+        let moved = false;
+        let scoreToAdd = 0;
+
+        if (toValue === 0) { // Move to empty cell
+            newGrid[to.row][to.col] = fromValue;
+            newGrid[from.row][from.col] = 0;
+            moved = true;
+        } else if (toValue === fromValue) { // Merge
+            const newValue = fromValue * 2;
+            newGrid[to.row][to.col] = newValue;
+            newGrid[from.row][from.col] = 0;
+            scoreToAdd = newValue;
+            moved = true;
         }
 
-        if (direction) {
-            e.preventDefault();
-            const { newGrid, scoreToAdd, moved } = move(grid, direction);
+        if (moved) {
+            const gridWithNewTile = addRandomTile(newGrid);
+            setGrid(gridWithNewTile);
+            setScore(s => s + scoreToAdd);
 
-            if (moved) {
-                const gridWithNewTile = addRandomTile(newGrid);
-                setGrid(gridWithNewTile);
-                setScore(s => s + scoreToAdd);
-
-                if (gridWithNewTile.some(row => row.includes(2048))) {
-                    setWin(true);
-                } else if (isGameOver(gridWithNewTile)) {
-                    setGameOver(true);
-                }
+            if (gridWithNewTile.flat().includes(2048)) {
+                setWin(true);
+            } else if (isGameOver(gridWithNewTile)) {
+                setGameOver(true);
             }
         }
-    }, [grid, gameOver, win]);
-
+    };
+    
     const resetGame = () => {
         setGrid(generateInitialGrid());
         setScore(0);
@@ -198,12 +148,7 @@ export default function Game2048Page() {
         // Initialize grid on client side to avoid hydration mismatch
         setGrid(generateInitialGrid());
     }, []);
-
-    useEffect(() => {
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [handleKeyDown]);
-
+    
     return (
         <div className="container mx-auto py-12 flex flex-col items-center">
             <div className="text-center mb-8">
@@ -211,7 +156,7 @@ export default function Game2048Page() {
                     2048: Dev Edition
                 </h1>
                 <p className="mt-3 max-w-2xl mx-auto text-lg text-muted-foreground">
-                    Ghép các công nghệ để đạt được "Portfolio" cuối cùng!
+                    Kéo và thả các công nghệ để hợp nhất chúng và đạt được "Portfolio" cuối cùng!
                 </p>
             </div>
             
@@ -223,13 +168,13 @@ export default function Game2048Page() {
                     </Button>
                 </CardHeader>
                 <CardContent>
-                    <div className="relative p-4 bg-secondary rounded-lg">
+                    <div className="relative p-4 bg-secondary rounded-lg" ref={gridRef}>
                        <AnimatePresence>
                         {(gameOver || win) && (
                             <motion.div 
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                className="absolute inset-0 bg-background/80 z-10 flex items-center justify-center rounded-lg"
+                                className="absolute inset-0 bg-background/80 z-20 flex items-center justify-center rounded-lg"
                             >
                                 <Dialog open onOpenChange={resetGame}>
                                     <DialogContent>
@@ -247,37 +192,63 @@ export default function Game2048Page() {
                             </motion.div>
                         )}
                         </AnimatePresence>
-                        <div className="grid grid-cols-4 gap-4">
-                            {grid.length > 0 ? grid.map((row, i) =>
-                                row.map((cell, j) => (
-                                    <AnimatePresence key={`${i}-${j}`}>
-                                        <motion.div
-                                            initial={{ scale: 0.5, opacity: 0 }}
-                                            animate={{ scale: 1, opacity: 1 }}
-                                            transition={{ duration: 0.2 }}
-                                        >
-                                            <Tile value={cell ?? 0} />
-                                        </motion.div>
-                                    </AnimatePresence>
+                        <div className="grid grid-cols-4 gap-4 aspect-square">
+                            {grid.length > 0 && grid.map((row, i) =>
+                                row.map((_, j) => (
+                                    <div key={`${i}-${j}`} className="h-full w-full rounded-lg bg-muted/50"></div>
                                 ))
-                            ) : Array.from({ length: 16 }).map((_, index) => (
-                                <div key={index} className="h-24 w-24 rounded-lg bg-muted/50"></div>
-                            ))}
+                            )}
                         </div>
+                        <AnimatePresence>
+                         {grid.length > 0 && grid.map((row, i) =>
+                            row.map((cellValue, j) => {
+                                if (cellValue === 0) return null;
+                                return (
+                                    <motion.div
+                                        key={`${i}-${j}-${cellValue}`}
+                                        layoutId={`${i}-${j}-${cellValue}`}
+                                        className="absolute p-2 z-10"
+                                        style={{ 
+                                            width: '25%', 
+                                            height: '25%',
+                                            top: `${i * 25}%`,
+                                            left: `${j * 25}%`
+                                        }}
+                                        drag
+                                        dragConstraints={gridRef}
+                                        dragElastic={0.2}
+                                        onDragEnd={(_, info) => {
+                                            if (!gridRef.current) return;
+                                            const gridRect = gridRef.current.getBoundingClientRect();
+                                            const cellWidth = gridRect.width / GRID_SIZE;
+                                            const cellHeight = gridRect.height / GRID_SIZE;
+
+                                            const dropCol = Math.floor((info.point.x - gridRect.left) / cellWidth);
+                                            const dropRow = Math.floor((info.point.y - gridRect.top) / cellHeight);
+
+                                            if(dropRow >= 0 && dropRow < GRID_SIZE && dropCol >=0 && dropCol < GRID_SIZE) {
+                                                handleDrop({ row: i, col: j }, { row: dropRow, col: dropCol });
+                                            }
+                                        }}
+                                        initial={{ scale: 0, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        exit={{ scale: 0, opacity: 0 }}
+                                        transition={{ duration: 0.3, ease: "backOut" }}
+                                    >
+                                        <Tile value={cellValue} />
+                                    </motion.div>
+                                );
+                            })
+                         )}
+                        </AnimatePresence>
                     </div>
                 </CardContent>
             </Card>
 
             <div className="mt-8 text-center text-muted-foreground">
                 <p className="font-bold mb-2">Cách chơi:</p>
-                <p>Sử dụng các phím mũi tên để di chuyển các ô.</p>
-                <p>Khi hai ô có cùng công nghệ chạm nhau, chúng sẽ hợp nhất!</p>
-                <div className="flex justify-center gap-2 mt-4 md:hidden">
-                    <Button variant="outline" size="icon" onClick={() => handleKeyDown({key: 'ArrowUp', preventDefault: ()=>{}} as KeyboardEvent)}><ArrowUp /></Button>
-                    <Button variant="outline" size="icon" onClick={() => handleKeyDown({key: 'ArrowDown', preventDefault: ()=>{}} as KeyboardEvent)}><ArrowDown /></Button>
-                    <Button variant="outline" size="icon" onClick={() => handleKeyDown({key: 'ArrowLeft', preventDefault: ()=>{}} as KeyboardEvent)}><ArrowLeft /></Button>
-                    <Button variant="outline" size="icon" onClick={() => handleKeyDown({key: 'ArrowRight', preventDefault: ()=>{}} as KeyboardEvent)}><ArrowRight /></Button>
-                </div>
+                <p>Kéo một ô và thả nó vào một ô khác.</p>
+                <p>Nếu hai ô có cùng công nghệ, chúng sẽ hợp nhất!</p>
             </div>
         </div>
     );
