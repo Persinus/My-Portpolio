@@ -1,4 +1,5 @@
 import ProjectCard from '@/components/ProjectCard';
+import RippleEffect from '@/components/RippleEffect';
 import { projects } from '@/lib/projects';
 
 export default function PortfolioPage() {
@@ -14,7 +15,9 @@ export default function PortfolioPage() {
       </div>
       <div className="grid gap-8 md:grid-cols-2">
         {projects.map((project, index) => (
-          <ProjectCard key={project.slug} project={project} index={index} />
+          <RippleEffect key={project.slug}>
+            <ProjectCard project={project} index={index} />
+          </RippleEffect>
         ))}
       </div>
     </div>

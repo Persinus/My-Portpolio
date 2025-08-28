@@ -8,6 +8,7 @@ import { Gamepad2 } from 'lucide-react';
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/portfolio', label: 'Portfolio' },
+  { href: '/blog', label: 'Blog' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];
@@ -31,7 +32,7 @@ export default function Header() {
               href={href}
               className={cn(
                 'transition-colors hover:text-primary',
-                pathname === href ? 'text-primary font-semibold' : 'text-muted-foreground'
+                pathname.startsWith(href) && href !== '/' || pathname === href ? 'text-primary font-semibold' : 'text-muted-foreground'
               )}
             >
               {label}

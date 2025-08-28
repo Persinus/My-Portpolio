@@ -33,10 +33,9 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
       variants={cardVariants}
       initial="hidden"
       animate="visible"
-      whileHover={{ y: -5, boxShadow: '0 10px 20px hsla(var(--primary) / 0.2)' }}
       className="h-full"
     >
-      <Card className="flex h-full flex-col overflow-hidden border-2 border-transparent transition-colors hover:border-primary">
+      <Card className="flex h-full flex-col overflow-hidden border-2 border-primary/20 bg-card/50 backdrop-blur-sm">
         <div className="relative h-48 w-full">
           <Image
             src={project.image}
