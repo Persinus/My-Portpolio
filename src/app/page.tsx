@@ -42,31 +42,31 @@ export default function HomePage() {
     <div className="container mx-auto py-12">
 
       {/* Hero Section */}
-      <section className="relative -mx-4 -mt-12 mb-20 h-[60vh] min-h-[400px] overflow-hidden">
-        <div className="absolute inset-0 z-0">
-            <div className="ken-burns-bg absolute inset-0 z-0" style={{ backgroundImage: `url(https://picsum.photos/1920/1080)` }} data-ai-hint="fantasy landscape"></div>
-            <div className="absolute inset-0 z-10 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
-        </div>
-        <div className="relative z-20 flex h-full flex-col items-center justify-center text-center">
-            <h1 className="font-headline text-4xl font-bold tracking-tighter text-foreground sm:text-5xl lg:text-6xl"
-                style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.7)' }}>
-                Xin chào! Tôi là <span className="text-primary glow-primary">Persinus</span>
-            </h1>
-            <p className="mt-4 max-w-2xl text-xl text-foreground/80" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.7)' }}>
-                Game Developer | Unity Enthusiast | Godot & C# Lover
-            </p>
-            <p className="mt-4 max-w-xl text-lg text-muted-foreground" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.7)' }}>
-              Đam mê sáng tạo, yêu thích xây dựng thế giới ảo và trải nghiệm mới cho người chơi.
-            </p>
-            <div className="mt-8 flex gap-4">
-                <Button asChild size="lg" className="glow-accent">
-                <Link href="/portfolio">Xem Dự Án</Link>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="bg-background/50 backdrop-blur-sm">
-                <Link href="/contact">Liên Hệ</Link>
-                </Button>
+      <section className="mb-20 text-center lg:text-left">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            <div className="order-2 lg:order-1">
+                <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl lg:text-6xl">
+                    Xin chào! Tôi là <span className="text-primary glow-primary">Persinus</span>
+                </h1>
+                <p className="mt-4 max-w-xl text-xl text-muted-foreground">
+                    Game Developer | Unity Enthusiast | Godot & C# Lover
+                </p>
+                <p className="mt-4 max-w-xl text-lg text-muted-foreground">
+                    Đam mê sáng tạo, yêu thích xây dựng thế giới ảo và trải nghiệm mới cho người chơi.
+                </p>
+                 <div className="mt-8 flex justify-center gap-4 lg:justify-start">
+                    <Button asChild size="lg" className="glow-accent">
+                    <Link href="/portfolio">Xem Dự Án</Link>
+                    </Button>
+                    <Button asChild size="lg" variant="outline">
+                    <Link href="/contact">Liên Hệ</Link>
+                    </Button>
+                </div>
             </div>
-        </div>
+            <div className="order-1 flex justify-center lg:order-2">
+                <AnimatedAvatar />
+            </div>
+          </div>
       </section>
 
       {/* Character Sheet Section */}
