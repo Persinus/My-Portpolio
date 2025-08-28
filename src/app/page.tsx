@@ -1,14 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Briefcase, Code, Dna, Settings, Star } from 'lucide-react';
-
-const skills = {
-  'Languages': ['TypeScript', 'JavaScript', 'Python', 'HTML5', 'CSS3'],
-  'Frameworks & Libraries': ['Next.js', 'React', 'Node.js', 'Tailwind CSS', 'Framer Motion'],
-  'Databases & Cloud': ['Firebase', 'PostgreSQL', 'Google Cloud', 'Vercel'],
-  'AI & ML': ['Genkit', 'TensorFlow', 'scikit-learn'],
-  'Tools': ['Git', 'Docker', 'Figma', 'Webpack'],
-};
+import { skills } from '@/lib/skills';
+import Image from 'next/image';
 
 const experience = [
   {
@@ -25,7 +18,23 @@ const experience = [
   },
 ];
 
+// Function to determine text color (black or white) based on background color brightness
+const getTextColor = (bgColor: string) => {
+  if (!bgColor) return '#000000';
+  const color = bgColor.substring(1); // remove #
+  const rgb = parseInt(color, 16);
+  const r = (rgb >> 16) & 0xff;
+  const g = (rgb >> 8) & 0xff;
+  const b = (rgb >> 0) & 0xff;
+  const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
+  return luma < 128 ? '#FFFFFF' : '#000000';
+};
+
+
 export default function HomePage() {
+  const languages = skills.filter(s => s.type === 'language');
+  const frameworks = skills.filter(s => s.type === 'framework');
+  
   return (
     <div className="container mx-auto py-12">
       <div className="text-center mb-12">
@@ -46,16 +55,27 @@ export default function HomePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            {Object.entries(skills).map(([category, items]) => (
-              <div key={category}>
-                <h3 className="mb-3 font-semibold text-muted-foreground">{category}</h3>
+             <div>
+                <h3 className="mb-3 font-semibold text-muted-foreground">Languages</h3>
                 <div className="flex flex-wrap gap-2">
-                  {items.map((item) => (
-                    <Badge key={item} variant="default" className="text-sm">{item}</Badge>
+                  {languages.map((skill) => (
+                    <div key={skill.name} className="flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-bold" style={{ backgroundColor: skill.color, color: getTextColor(skill.color) }}>
+                       {skill.short}
+                    </div>
                   ))}
                 </div>
               </div>
-            ))}
+              <div>
+                <h3 className="mb-3 font-semibold text-muted-foreground">Frameworks & Libraries</h3>
+                <div className="flex flex-wrap gap-2">
+                  {frameworks.map((skill) => (
+                     <div key={skill.name} className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold" style={{ backgroundColor: skill.color, color: getTextColor(skill.color) }}>
+                      {skill.icon && <Image src={skill.icon} alt={skill.name} width={16} height={16} className="filter-brightness-saturate" />}
+                      <span>{skill.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
           </CardContent>
         </Card>
 
