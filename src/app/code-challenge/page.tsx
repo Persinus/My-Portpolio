@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { codeChallenge, CodeChallengeInput, CodeChallengeOutput } from '@/ai/flows/code-challenge';
+import { codeChallenge, type CodeChallengeOutput } from '@/ai/flows/code-challenge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Lightbulb, Code, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';

@@ -11,12 +11,12 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const CodeChallengeInputSchema = z.object({
+const CodeChallengeInputSchema = z.object({
   topic: z.string().describe('The programming topic for the challenge (e.g., "React Hooks", "JavaScript Closures").'),
 });
 export type CodeChallengeInput = z.infer<typeof CodeChallengeInputSchema>;
 
-export const CodeChallengeOutputSchema = z.object({
+const CodeChallengeOutputSchema = z.object({
   codeSnippet: z.string().describe('A concise code snippet related to the topic, formatted for display.'),
   question: z.string().describe('A clear, specific question about the provided code snippet.'),
   choices: z.array(z.string()).length(4).describe('An array of exactly four multiple-choice answers. One must be correct.'),
