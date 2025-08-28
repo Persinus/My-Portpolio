@@ -27,6 +27,12 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.jsdelivr.net',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.pinimg.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

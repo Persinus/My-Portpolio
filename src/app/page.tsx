@@ -2,6 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Briefcase, Code, Dna, Settings, Star } from 'lucide-react';
 import { skills } from '@/lib/skills';
 import Image from 'next/image';
+import AnimatedAvatar from '@/components/AnimatedAvatar';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const experience = [
   {
@@ -37,10 +40,41 @@ export default function HomePage() {
   
   return (
     <div className="container mx-auto py-12">
+
+      {/* Hero Section */}
+      <section className="mb-20">
+        <div className="container mx-auto flex flex-col-reverse items-center gap-12 md:flex-row md:justify-between">
+          <div className="text-center md:text-left md:w-1/2">
+            <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl lg:text-6xl">
+              Xin chào! <br />
+              Tôi là <span className="text-primary glow-primary">Persinus</span>
+            </h1>
+            <p className="mt-4 text-xl font-headline text-muted-foreground">
+              Game Developer | Unity Enthusiast | Godot & C# Lover
+            </p>
+            <p className="mt-6 max-w-xl text-lg text-muted-foreground">
+              Đam mê sáng tạo, yêu thích xây dựng thế giới ảo và trải nghiệm mới cho người chơi. Thành thạo Unity, Godot, C#, có kinh nghiệm phát triển game 2D/3D và mobile.
+            </p>
+            <div className="mt-8 flex justify-center gap-4 md:justify-start">
+              <Button asChild size="lg" className="glow-accent">
+                <Link href="/portfolio">Xem Dự Án</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link href="/contact">Liên Hệ</Link>
+              </Button>
+            </div>
+          </div>
+          <div className="flex justify-center md:w-1/2">
+            <AnimatedAvatar />
+          </div>
+        </div>
+      </section>
+
+      {/* Character Sheet Section */}
       <div className="text-center mb-12">
-        <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">
+        <h2 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">
           Character Sheet
-        </h1>
+        </h2>
         <p className="mt-3 max-w-2xl mx-auto text-lg text-muted-foreground">
           An overview of my professional stats and journey so far.
         </p>
