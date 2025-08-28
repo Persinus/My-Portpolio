@@ -80,6 +80,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    cursor: url('/cursor.svg'), auto;
+  }
+  a, button {
+    cursor: url('/cursor.svg'), auto;
   }
 }
 
