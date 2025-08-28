@@ -223,8 +223,8 @@ export default function Game2048Page() {
                                             const cellWidth = gridRect.width / GRID_SIZE;
                                             const cellHeight = gridRect.height / GRID_SIZE;
 
-                                            const dropCol = Math.floor((info.point.x - gridRect.left) / cellWidth);
-                                            const dropRow = Math.floor((info.point.y - gridRect.top) / cellHeight);
+                                            const dropCol = Math.min(GRID_SIZE - 1, Math.max(0, Math.floor((info.point.x - gridRect.left) / cellWidth)));
+                                            const dropRow = Math.min(GRID_SIZE - 1, Math.max(0, Math.floor((info.point.y - gridRect.top) / cellHeight)));
 
                                             if(dropRow >= 0 && dropRow < GRID_SIZE && dropCol >=0 && dropCol < GRID_SIZE) {
                                                 handleDrop({ row: i, col: j }, { row: dropRow, col: dropCol });
