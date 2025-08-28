@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Monitor, Moon, Sun, Wand2, Puzzle, Bot } from 'lucide-react';
+import { Bot, ScrollText, Wand2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 import { Button } from '@/components/ui/button';
@@ -17,17 +17,17 @@ const themes = [
   {
     name: 'theme-fantasy',
     label: 'Fantasy',
-    icon: <Wand2 />,
+    icon: <Wand2 className="h-5 w-5" />,
   },
   {
     name: 'theme-cyberpunk',
     label: 'Cyberpunk',
-    icon: <Bot />,
+    icon: <Bot className="h-5 w-5" />,
   },
   {
-    name: 'theme-retro',
-    label: 'Retro',
-    icon: <Puzzle />,
+    name: 'theme-dungeon',
+    label: 'Dungeon',
+    icon: <ScrollText className="h-5 w-5" />,
   },
 ];
 
@@ -53,17 +53,19 @@ export function ThemeToggle() {
     <TooltipProvider>
       <div className="flex items-center gap-1 rounded-full border bg-background p-1">
         {themes.map((t) => (
-          <Tooltip key={t.name}>
+          <Tooltip key={t.name} delayDuration={0}>
             <TooltipTrigger asChild>
-              <Button
-                variant={theme === t.name ? 'secondary' : 'ghost'}
-                size="icon"
-                className="h-8 w-8 rounded-full"
+              <button
+                aria-label={`Switch to ${t.label} theme`}
+                className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${
+                  theme === t.name
+                    ? 'bg-secondary text-secondary-foreground'
+                    : 'bg-transparent text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                }`}
                 onClick={() => setTheme(t.name)}
               >
                 {t.icon}
-                <span className="sr-only">{t.label}</span>
-              </Button>
+              </button>
             </TooltipTrigger>
             <TooltipContent>
               <p>{t.label}</p>
