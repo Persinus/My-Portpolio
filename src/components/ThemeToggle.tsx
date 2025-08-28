@@ -4,13 +4,18 @@
 import * as React from 'react';
 import { Bot, ScrollText, Wand2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 const themes = [
   {
@@ -43,21 +48,34 @@ export function ThemeToggle() {
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
         <Button variant="ghost" size="icon">
           <Wand2 className="h-5 w-5" />
           <span className="sr-only">Toggle theme</span>
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {themes.map((t) => (
-           <DropdownMenuItem key={t.name} onClick={() => setTheme(t.name)}>
-             {t.icon}
-             <span>{t.label}</span>
-           </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Change your world?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Select a new theme to alter the appearance of your quest.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <div className="py-4 space-y-2">
+            {themes.map((t) => (
+                 <AlertDialogAction key={t.name} asChild className="w-full justify-start">
+                    <button onClick={() => setTheme(t.name)}>
+                        {t.icon}
+                        <span>{t.label}</span>
+                    </button>
+                </AlertDialogAction>
+            ))}
+        </div>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Stay</AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
