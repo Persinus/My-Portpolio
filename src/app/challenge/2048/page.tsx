@@ -153,13 +153,13 @@ const isGameOver = (grid: (number | null)[][]) => {
 };
 
 export default function Game2048Page() {
-    const [grid, setGrid] = useState<(number | null)[][]>(generateInitialGrid());
+    const [grid, setGrid] = useState<(number | null)[][]>([]);
     const [score, setScore] = useState(0);
     const [gameOver, setGameOver] = useState(false);
     const [win, setWin] = useState(false);
 
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
-        if (gameOver || win) return;
+        if (gameOver || win || grid.length === 0) return;
 
         let direction: 'up' | 'down' | 'left' | 'right' | null = null;
         switch (e.key) {
@@ -193,6 +193,11 @@ export default function Game2048Page() {
         setGameOver(false);
         setWin(false);
     };
+
+    useEffect(() => {
+        // Initialize grid on client side to avoid hydration mismatch
+        setGrid(generateInitialGrid());
+    }, []);
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown);
@@ -243,7 +248,7 @@ export default function Game2048Page() {
                         )}
                         </AnimatePresence>
                         <div className="grid grid-cols-4 gap-4">
-                            {grid.map((row, i) =>
+                            {grid.length > 0 ? grid.map((row, i) =>
                                 row.map((cell, j) => (
                                     <AnimatePresence key={`${i}-${j}`}>
                                         <motion.div
@@ -255,7 +260,9 @@ export default function Game2048Page() {
                                         </motion.div>
                                     </AnimatePresence>
                                 ))
-                            )}
+                            ) : Array.from({ length: 16 }).map((_, index) => (
+                                <div key={index} className="h-24 w-24 rounded-lg bg-muted/50"></div>
+                            ))}
                         </div>
                     </div>
                 </CardContent>
