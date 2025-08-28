@@ -27,6 +27,7 @@ const gameLinks = [
     { href: '/challenge', label: 'Challenge Arcade'},
     { href: '/challenge/ai-quiz', label: 'AI Code Quiz'},
     { href: '/challenge/2048', label: '2048: Dev Edition'},
+    { href: '/challenge/bug-bounty', label: 'Bug Bounty Hunter'},
 ]
 
 export default function Header() {

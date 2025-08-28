@@ -21,6 +21,13 @@ const games = [
     image: 'https://picsum.photos/400/200',
     imageHint: 'puzzle game'
   },
+  {
+    title: 'Bug Bounty Hunter',
+    slug: '/challenge/bug-bounty',
+    description: 'An idle/clicker game where you fix bugs to buy upgrades and automate your workflow.',
+    image: 'https://picsum.photos/400/200',
+    imageHint: 'code dashboard'
+  },
 ];
 
 export default function ChallengePage() {
@@ -67,4 +74,3 @@ export default function ChallengePage() {
     </div>
   );
 }
-
