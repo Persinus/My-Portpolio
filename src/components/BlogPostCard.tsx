@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from './ui/button';
 import { ArrowRight, Calendar } from 'lucide-react';
 import type { Post } from '@/lib/posts';
+import Image from 'next/image';
 
 type BlogPostCardProps = {
   post: Post;
@@ -36,6 +37,18 @@ export default function BlogPostCard({ post, index }: BlogPostCardProps) {
       className="h-full"
     >
       <Card className="flex h-full flex-col overflow-hidden border-2 border-transparent transition-colors hover:border-primary">
+        {post.coverImage && (
+            <div className="relative h-48 w-full">
+                <Image
+                    src={post.coverImage}
+                    alt={post.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    data-ai-hint={post.imageHint}
+                    className="object-cover"
+                />
+            </div>
+        )}
         <CardHeader>
           <CardTitle className="font-headline text-2xl leading-tight">{post.title}</CardTitle>
           <CardDescription className="flex items-center gap-2 pt-1 text-sm">
@@ -48,8 +61,8 @@ export default function BlogPostCard({ post, index }: BlogPostCardProps) {
         <CardFooter className="flex-col items-start gap-4">
             <div className="flex flex-wrap gap-2">
                 {post.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary">
-                        {tag}
+                    <Badge key={tag} variant="secondary" className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20">
+                        #{tag}
                     </Badge>
                 ))}
             </div>

@@ -1,8 +1,9 @@
 import { getAllPosts, getPostBySlug } from '@/lib/posts';
 import { notFound } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from 'lucide-react';
+import Image from 'next/image';
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -27,7 +28,20 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <div className="container mx-auto py-12">
       <article className="max-w-4xl mx-auto">
-        <header className="mb-8 text-center">
+        <header className="mb-8">
+          {post.coverImage && (
+             <div className="relative h-64 md:h-96 w-full mb-8 rounded-lg overflow-hidden">
+                <Image
+                    src={post.coverImage}
+                    alt={post.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 800px"
+                    data-ai-hint={post.imageHint}
+                    className="object-cover"
+                />
+            </div>
+          )}
+          <div className="text-center">
             <p className="text-sm text-muted-foreground mb-2 flex items-center justify-center gap-2">
                 <Calendar className="h-4 w-4" /> Published on {post.date}
             </p>
@@ -39,6 +53,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                     <Badge key={tag} variant="secondary">{tag}</Badge>
                 ))}
             </div>
+          </div>
         </header>
         
         <Card>
