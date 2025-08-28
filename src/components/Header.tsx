@@ -14,7 +14,7 @@ const navLinks = [
   { href: '/portfolio', label: 'Portfolio' },
   { href: '/blog', label: 'Blog' },
   { href: '/contact', label: 'Contact' },
-  { href: '/code-challenge', label: 'Challenge' },
+  { href: '/challenge', label: 'Challenge' },
 ];
 
 export default function Header() {
@@ -38,7 +38,7 @@ export default function Header() {
               onClick={playNavigationSound}
               className={cn(
                 'transition-colors hover:text-primary',
-                (pathname.startsWith(href) && href !== '/') || pathname === href ? 'text-primary font-semibold' : 'text-muted-foreground'
+                pathname.startsWith(href) && href !== '/' || pathname === href ? 'text-primary font-semibold' : 'text-muted-foreground'
               )}
             >
               {label}
