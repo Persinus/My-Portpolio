@@ -43,6 +43,7 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
+    // Return a placeholder to prevent layout shift
     return <div className="h-10 w-10" />;
   }
 
@@ -63,12 +64,10 @@ export function ThemeToggle() {
         </AlertDialogHeader>
         <div className="py-4 space-y-2">
             {themes.map((t) => (
-                 <AlertDialogCancel key={t.name} asChild>
-                    <Button onClick={() => setTheme(t.name)} variant="outline" className="w-full justify-start">
-                        {t.icon}
-                        <span>{t.label}</span>
-                    </Button>
-                </AlertDialogCancel>
+                <Button key={t.name} onClick={() => setTheme(t.name)} variant="outline" className="w-full justify-start">
+                    {t.icon}
+                    <span>{t.label}</span>
+                </Button>
             ))}
         </div>
         <AlertDialogFooter>
