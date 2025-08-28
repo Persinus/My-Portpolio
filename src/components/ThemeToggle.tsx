@@ -64,12 +64,15 @@ export function ThemeToggle() {
         </AlertDialogHeader>
         <div className="py-4 space-y-2">
             {themes.map((t) => (
-                <AlertDialogCancel asChild key={t.name}>
-                    <Button onClick={() => setTheme(t.name)} variant="outline" className="w-full justify-start">
-                        {t.icon}
-                        <span>{t.label}</span>
-                    </Button>
-                </AlertDialogCancel>
+              <Button 
+                key={t.name}
+                onClick={() => setTheme(t.name)} 
+                variant="outline" 
+                className="w-full justify-start"
+              >
+                  {t.icon}
+                  <span>{t.label}</span>
+              </Button>
             ))}
         </div>
         <AlertDialogFooter>
