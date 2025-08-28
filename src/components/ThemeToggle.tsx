@@ -4,7 +4,6 @@ import * as React from 'react';
 import { Bot, ScrollText, Wand2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
-import { Button } from '@/components/ui/button';
 import {
   Tooltip,
   TooltipContent,
