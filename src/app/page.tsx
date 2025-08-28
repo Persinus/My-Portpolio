@@ -2,9 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Briefcase, Code, Dna, Settings, Star } from 'lucide-react';
 import { skills } from '@/lib/skills';
 import Image from 'next/image';
-import AnimatedAvatar from '@/components/AnimatedAvatar';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import AnimatedAvatar from '@/components/AnimatedAvatar';
 
 const experience = [
   {
@@ -42,31 +42,30 @@ export default function HomePage() {
     <div className="container mx-auto py-12">
 
       {/* Hero Section */}
-      <section className="mb-20">
-        <div className="container mx-auto flex flex-col-reverse items-center gap-12 md:flex-row md:justify-between">
-          <div className="text-center md:text-left md:w-1/2">
-            <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl lg:text-6xl">
-              Xin chào! <br />
-              Tôi là <span className="text-primary glow-primary">Persinus</span>
+      <section className="relative -mx-4 -mt-12 mb-20 h-[60vh] min-h-[400px] overflow-hidden">
+        <div className="absolute inset-0 z-0">
+            <div className="ken-burns-bg absolute inset-0 z-0" style={{ backgroundImage: `url(https://picsum.photos/1920/1080)` }} data-ai-hint="fantasy landscape"></div>
+            <div className="absolute inset-0 z-10 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
+        </div>
+        <div className="relative z-20 flex h-full flex-col items-center justify-center text-center">
+            <h1 className="font-headline text-4xl font-bold tracking-tighter text-foreground sm:text-5xl lg:text-6xl"
+                style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.7)' }}>
+                Xin chào! Tôi là <span className="text-primary glow-primary">Persinus</span>
             </h1>
-            <p className="mt-4 text-xl font-headline text-muted-foreground">
-              Game Developer | Unity Enthusiast | Godot & C# Lover
+            <p className="mt-4 max-w-2xl text-xl text-foreground/80" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.7)' }}>
+                Game Developer | Unity Enthusiast | Godot & C# Lover
             </p>
-            <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-              Đam mê sáng tạo, yêu thích xây dựng thế giới ảo và trải nghiệm mới cho người chơi. Thành thạo Unity, Godot, C#, có kinh nghiệm phát triển game 2D/3D và mobile.
+            <p className="mt-4 max-w-xl text-lg text-muted-foreground" style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.7)' }}>
+              Đam mê sáng tạo, yêu thích xây dựng thế giới ảo và trải nghiệm mới cho người chơi.
             </p>
-            <div className="mt-8 flex justify-center gap-4 md:justify-start">
-              <Button asChild size="lg" className="glow-accent">
+            <div className="mt-8 flex gap-4">
+                <Button asChild size="lg" className="glow-accent">
                 <Link href="/portfolio">Xem Dự Án</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
+                </Button>
+                <Button asChild size="lg" variant="outline" className="bg-background/50 backdrop-blur-sm">
                 <Link href="/contact">Liên Hệ</Link>
-              </Button>
+                </Button>
             </div>
-          </div>
-          <div className="flex justify-center md:w-1/2">
-            <AnimatedAvatar />
-          </div>
         </div>
       </section>
 
