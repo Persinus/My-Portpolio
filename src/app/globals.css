@@ -90,3 +90,6 @@
 .glow-accent {
   filter: drop-shadow(0 0 10px hsl(var(--accent)));
 }
+.glow-accent-hover:hover {
+  filter: drop-shadow(0 0 10px hsl(var(--accent)));
+}
