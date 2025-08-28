@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { Skeleton } from './ui/skeleton';
 
 const themes = [
   {
@@ -32,6 +33,21 @@ const themes = [
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+        <div className="flex items-center gap-1 rounded-full border bg-background p-1">
+            {themes.map((t) => (
+                <Skeleton key={t.name} className="h-8 w-8 rounded-full" />
+            ))}
+        </div>
+    )
+  }
 
   return (
     <TooltipProvider>
