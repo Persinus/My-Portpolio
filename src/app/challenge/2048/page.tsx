@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, useCallback }g from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, ArrowUp, ArrowDown, RotateCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -275,4 +275,3 @@ export default function Game2048Page() {
         </div>
     );
 }
-
