@@ -11,6 +11,8 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Skeleton } from './ui/skeleton';
+import { Button } from './ui/button';
+import { cn } from '@/lib/utils';
 
 const themes = [
   {
@@ -54,17 +56,18 @@ export function ThemeToggle() {
         {themes.map((t) => (
           <Tooltip key={t.name} delayDuration={0}>
             <TooltipTrigger asChild>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 aria-label={`Switch to ${t.label} theme`}
-                className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${
-                  theme === t.name
-                    ? 'bg-secondary text-secondary-foreground'
-                    : 'bg-transparent text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                }`}
+                className={cn(
+                    'h-8 w-8 rounded-full',
+                    theme === t.name ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'
+                )}
                 onClick={() => setTheme(t.name)}
               >
                 {t.icon}
-              </button>
+              </Button>
             </TooltipTrigger>
             <TooltipContent>
               <p>{t.label}</p>
