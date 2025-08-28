@@ -1,0 +1,8 @@
+---
+title: 'Optimizing Shaders for Web Games'
+date: '2024-02-15'
+tags: ['shaders', 'webgl', 'optimization']
+excerpt: 'A deep dive into how I improved performance by optimizing my custom shaders.'
+---
+
+Shaders are powerful, but can be a performance bottleneck. In this post, we'll explore techniques to optimize them for web-based games.

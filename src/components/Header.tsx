@@ -32,7 +32,7 @@ export default function Header() {
               href={href}
               className={cn(
                 'transition-colors hover:text-primary',
-                pathname.startsWith(href) && href !== '/' || pathname === href ? 'text-primary font-semibold' : 'text-muted-foreground'
+                (pathname.startsWith(href) && href !== '/') || pathname === href ? 'text-primary font-semibold' : 'text-muted-foreground'
               )}
             >
               {label}
