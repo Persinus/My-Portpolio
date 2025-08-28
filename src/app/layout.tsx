@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import PageTransitionWrapper from '@/components/PageTransitionWrapper';
 import AIAssistant from '@/components/AIAssistant';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Portfolio Quest',
@@ -38,6 +39,7 @@ export default function RootLayout({
             <main className="flex-1">
               <PageTransitionWrapper>{children}</PageTransitionWrapper>
             </main>
+            <Footer />
             <AIAssistant />
             <Toaster />
           </div>
