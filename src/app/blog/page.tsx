@@ -1,6 +1,5 @@
 import BlogPostCard from '@/components/BlogPostCard';
 import { getAllPosts } from '@/lib/posts';
-import FogWrapper from '@/components/FogWrapper';
 
 export default function BlogPage() {
   const posts = getAllPosts();
@@ -17,9 +16,7 @@ export default function BlogPage() {
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {posts.map((post, index) => (
-          <FogWrapper key={post.slug}>
-            <BlogPostCard post={post} index={index} />
-          </FogWrapper>
+            <BlogPostCard key={post.slug} post={post} index={index} />
         ))}
       </div>
     </div>

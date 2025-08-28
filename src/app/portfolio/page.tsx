@@ -1,7 +1,6 @@
 import ProjectCard from '@/components/ProjectCard';
 import RippleEffect from '@/components/RippleEffect';
 import { projects } from '@/lib/projects';
-import FogWrapper from '@/components/FogWrapper';
 
 export default function PortfolioPage() {
   return (
@@ -16,11 +15,9 @@ export default function PortfolioPage() {
       </div>
       <div className="grid gap-8 md:grid-cols-2">
         {projects.map((project, index) => (
-          <FogWrapper key={project.slug}>
-            <RippleEffect>
-              <ProjectCard project={project} index={index} />
-            </RippleEffect>
-          </FogWrapper>
+          <RippleEffect key={project.slug}>
+            <ProjectCard project={project} index={index} />
+          </RippleEffect>
         ))}
       </div>
     </div>
