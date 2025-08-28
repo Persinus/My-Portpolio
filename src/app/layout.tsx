@@ -7,6 +7,7 @@ import AIAssistant from '@/components/AIAssistant';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import Footer from '@/components/Footer';
 import KonamiWrapper from '@/components/KonamiWrapper';
+import LoadingScreen from '@/components/LoadingScreen';
 
 export const metadata: Metadata = {
   title: 'Portfolio Quest',
@@ -36,6 +37,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <KonamiWrapper>
+             <LoadingScreen />
             <div className="relative flex min-h-screen w-full flex-col">
               <Header />
               <main className="flex-1">
