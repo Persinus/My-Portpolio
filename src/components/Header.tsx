@@ -4,18 +4,30 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Gamepad2 } from 'lucide-react';
+import { Gamepad2, ChevronDown } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import ScrollProgressBar from './ScrollProgressBar';
 import { useSound } from '@/hooks/useSound';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from './ui/button';
 
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/portfolio', label: 'Portfolio' },
   { href: '/blog', label: 'Blog' },
   { href: '/contact', label: 'Contact' },
-  { href: '/challenge', label: 'Challenge' },
 ];
+
+const gameLinks = [
+    { href: '/challenge', label: 'Challenge Arcade'},
+    { href: '/challenge/ai-quiz', label: 'AI Code Quiz'},
+    { href: '/challenge/2048', label: '2048: Dev Edition'},
+]
 
 export default function Header() {
   const pathname = usePathname();
@@ -44,6 +56,25 @@ export default function Header() {
               {label}
             </Link>
           ))}
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className={cn(
+                        'flex items-center gap-1 p-0 h-auto text-sm font-medium transition-colors hover:text-primary focus-visible:ring-0',
+                        pathname.startsWith('/challenge') ? 'text-primary font-semibold' : 'text-muted-foreground'
+                    )}>
+                        Challenge <ChevronDown className="h-4 w-4" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    {gameLinks.map(({href, label}) => (
+                        <DropdownMenuItem key={href} asChild>
+                             <Link href={href} onClick={playNavigationSound}>
+                                {label}
+                             </Link>
+                        </DropdownMenuItem>
+                    ))}
+                </DropdownMenuContent>
+            </DropdownMenu>
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-4">
           <ThemeToggle />
