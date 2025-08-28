@@ -103,38 +103,42 @@ export default function Game2048Page() {
     ) => {
         if (from.row === to.row && from.col === to.col) return;
 
-        const newGrid = grid.map(r => [...r]);
-        const fromValue = newGrid[from.row][from.col];
-        const toValue = newGrid[to.row][to.col];
-
-        if (fromValue === 0) return;
-
-        let moved = false;
-        let scoreToAdd = 0;
-
-        if (toValue === 0) { // Move to empty cell
-            newGrid[to.row][to.col] = fromValue;
-            newGrid[from.row][from.col] = 0;
-            moved = true;
-        } else if (toValue === fromValue) { // Merge
-            const newValue = fromValue * 2;
-            newGrid[to.row][to.col] = newValue;
-            newGrid[from.row][from.col] = 0;
-            scoreToAdd = newValue;
-            moved = true;
-        }
-
-        if (moved) {
-            const gridWithNewTile = addRandomTile(newGrid);
-            setGrid(gridWithNewTile);
-            setScore(s => s + scoreToAdd);
-
-            if (gridWithNewTile.flat().includes(2048)) {
-                setWin(true);
-            } else if (isGameOver(gridWithNewTile)) {
-                setGameOver(true);
+        setGrid(currentGrid => {
+            const newGrid = currentGrid.map(r => [...r]);
+            const fromValue = newGrid[from.row][from.col];
+            const toValue = newGrid[to.row][to.col];
+    
+            if (fromValue === 0) return currentGrid;
+    
+            let moved = false;
+            let scoreToAdd = 0;
+    
+            if (toValue === 0) { // Move to empty cell
+                newGrid[to.row][to.col] = fromValue;
+                newGrid[from.row][from.col] = 0;
+                moved = true;
+            } else if (toValue === fromValue) { // Merge
+                const newValue = fromValue * 2;
+                newGrid[to.row][to.col] = newValue;
+                newGrid[from.row][from.col] = 0;
+                scoreToAdd = newValue;
+                moved = true;
             }
-        }
+    
+            if (moved) {
+                const gridWithNewTile = addRandomTile(newGrid);
+                setScore(s => s + scoreToAdd);
+    
+                if (gridWithNewTile.flat().includes(2048)) {
+                    setWin(true);
+                } else if (isGameOver(gridWithNewTile)) {
+                    setGameOver(true);
+                }
+                return gridWithNewTile;
+            }
+            
+            return currentGrid; // No move was made
+        });
     };
     
     const resetGame = () => {
