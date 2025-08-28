@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Briefcase, Code, Dna, Settings, Star } from 'lucide-react';
 import { skills } from '@/lib/skills';
@@ -42,9 +43,9 @@ export default function HomePage() {
     <div className="container mx-auto py-12">
 
       {/* Hero Section */}
-      <section className="mb-20 text-center lg:text-left">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
-            <div className="order-2 lg:order-1">
+      <section className="mb-20">
+          <div className="grid items-center gap-12 lg:grid-cols-10">
+            <div className="order-2 lg:order-1 lg:col-span-7">
                 <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl lg:text-6xl">
                     Xin chào! Tôi là <span className="text-primary glow-primary">Persinus</span>
                 </h1>
@@ -54,7 +55,7 @@ export default function HomePage() {
                 <p className="mt-4 max-w-xl text-lg text-muted-foreground">
                     Đam mê sáng tạo, yêu thích xây dựng thế giới ảo và trải nghiệm mới cho người chơi.
                 </p>
-                 <div className="mt-8 flex justify-center gap-4 lg:justify-start">
+                 <div className="mt-8 flex flex-wrap gap-4">
                     <Button asChild size="lg" className="glow-accent">
                     <Link href="/portfolio">Xem Dự Án</Link>
                     </Button>
@@ -63,7 +64,7 @@ export default function HomePage() {
                     </Button>
                 </div>
             </div>
-            <div className="order-1 flex justify-center lg:order-2">
+            <div className="order-1 flex justify-center lg:order-2 lg:col-span-3">
                 <AnimatedAvatar />
             </div>
           </div>
