@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -11,8 +12,8 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Skeleton } from './ui/skeleton';
-import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
+import { buttonVariants } from './ui/button';
 
 const themes = [
   {
@@ -56,18 +57,17 @@ export function ThemeToggle() {
         {themes.map((t) => (
           <Tooltip key={t.name} delayDuration={0}>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
+              <button
                 aria-label={`Switch to ${t.label} theme`}
                 className={cn(
+                    buttonVariants({ variant: 'ghost', size: 'icon' }),
                     'h-8 w-8 rounded-full',
                     theme === t.name ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'
                 )}
                 onClick={() => setTheme(t.name)}
               >
                 {t.icon}
-              </Button>
+              </button>
             </TooltipTrigger>
             <TooltipContent>
               <p>{t.label}</p>
