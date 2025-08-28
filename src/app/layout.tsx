@@ -6,6 +6,7 @@ import PageTransitionWrapper from '@/components/PageTransitionWrapper';
 import AIAssistant from '@/components/AIAssistant';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import Footer from '@/components/Footer';
+import KonamiWrapper from '@/components/KonamiWrapper';
 
 export const metadata: Metadata = {
   title: 'Portfolio Quest',
@@ -34,15 +35,17 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="relative flex min-h-screen w-full flex-col">
-            <Header />
-            <main className="flex-1">
-              <PageTransitionWrapper>{children}</PageTransitionWrapper>
-            </main>
-            <Footer />
-            <AIAssistant />
-            <Toaster />
-          </div>
+          <KonamiWrapper>
+            <div className="relative flex min-h-screen w-full flex-col">
+              <Header />
+              <main className="flex-1">
+                <PageTransitionWrapper>{children}</PageTransitionWrapper>
+              </main>
+              <Footer />
+              <AIAssistant />
+              <Toaster />
+            </div>
+          </KonamiWrapper>
         </ThemeProvider>
       </body>
     </html>

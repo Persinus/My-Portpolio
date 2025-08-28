@@ -83,6 +83,19 @@
   }
 }
 
+@keyframes barrel-roll {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.barrel-roll {
+  animation: barrel-roll 1.5s ease-in-out;
+}
+
 .glow-primary {
   filter: drop-shadow(0 0 10px hsl(var(--primary)));
 }
