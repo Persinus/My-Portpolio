@@ -57,7 +57,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         </header>
         
         <Card>
-            <CardContent className="prose dark:prose-invert prose-lg max-w-none p-6 pt-6"
+            <CardContent className="prose dark:prose-invert prose-lg max-w-none p-6 pt-6 prose-pre:bg-secondary prose-pre:text-secondary-foreground"
               dangerouslySetInnerHTML={{ __html: post.contentHTML }}
             />
         </Card>
