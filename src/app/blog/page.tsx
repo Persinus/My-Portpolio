@@ -14,7 +14,7 @@ export default function BlogPage() {
           Thoughts, tutorials, and behind-the-scenes of my game development journey.
         </p>
       </div>
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {posts.map((post, index) => (
           <BlogPostCard key={post.slug} post={post} index={index} />
         ))}
