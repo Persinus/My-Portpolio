@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Gamepad2 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
+import ScrollProgressBar from './ScrollProgressBar';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -43,6 +44,7 @@ export default function Header() {
           <ThemeToggle />
         </div>
       </div>
+      <ScrollProgressBar />
     </header>
   );
 }
