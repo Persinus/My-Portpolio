@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Gamepad2 } from 'lucide-react';
+import { ThemeToggle } from './ThemeToggle';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -25,7 +26,7 @@ export default function Header() {
             Portfolio Quest
           </span>
         </Link>
-        <nav className="flex flex-1 items-center space-x-6 text-sm font-medium">
+        <nav className="hidden flex-1 items-center space-x-6 text-sm font-medium md:flex">
           {navLinks.map(({ href, label }) => (
             <Link
               key={href}
@@ -39,6 +40,9 @@ export default function Header() {
             </Link>
           ))}
         </nav>
+        <div className="flex flex-1 items-center justify-end space-x-4">
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );
