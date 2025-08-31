@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'httpsd',
+        protocol: 'https',
         hostname: 'cdn.jsdelivr.net',
         port: '',
         pathname: '/**',
