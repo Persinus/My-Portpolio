@@ -5,19 +5,17 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Award, Bug, Coffee, Cpu, HelpCircle, PlusCircle, Server, ShieldCheck, Zap, History, Star, TrendingUp, Atom, Palette, Gamepad2 } from 'lucide-react';
+import { Award, Bug, Coffee, History, TrendingUp, Atom, Palette, Gamepad2, Star, CheckCircle2, ShoppingCart } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import StatsDisplay from '@/components/bug-bounty/StatsDisplay';
 import UpgradeCard from '@/components/bug-bounty/UpgradeCard';
 import AchievementsDialog from '@/components/bug-bounty/AchievementsDialog';
 import { type Achievement, checkAchievements, initialAchievements } from '@/components/bug-bounty/achievements';
-import FakeCodeEditor from '@/components/bug-bounty/FakeCodeEditor';
-import SkinShop from '@/components/bug-bounty/SkinShop';
-import { type EditorTheme, editorThemes } from '@/components/bug-bounty/editorThemes';
 import { useSound } from '@/hooks/useSound';
+import Image from 'next/image';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
 // --- Helper Functions and Initial State ---
@@ -31,15 +29,15 @@ const formatNumber = (num: number): string => {
 
 const initialSpsUpgrades = [
   { id: 'dev', name: 'Thuê Junior Dev', baseCost: 15, sps: 0.1, icon: <Coffee className="text-blue-400" /> },
-  { id: 'test', name: 'Test Tự Động', baseCost: 100, sps: 1, icon: <ShieldCheck className="text-green-400" /> },
-  { id: 'server', name: 'Server Nhanh Hơn', baseCost: 1100, sps: 8, icon: <Server className="text-purple-400" /> },
-  { id: 'ai', name: 'AI Hỗ Trợ Code', baseCost: 12000, sps: 47, icon: <Cpu className="text-orange-400" /> },
+  { id: 'test', name: 'Test Tự Động', baseCost: 100, sps: 1, icon: <CheckCircle2 className="text-green-400" /> },
+  { id: 'server', name: 'Server Nhanh Hơn', baseCost: 1100, sps: 8, icon: <TrendingUp className="text-purple-400" /> },
+  { id: 'ai', name: 'AI Hỗ Trợ Code', baseCost: 12000, sps: 47, icon: <Atom className="text-orange-400" /> },
 ];
 
 const initialClickUpgrades = [
   { id: 'mouse', name: 'Chuột Gaming', baseCost: 10, clickMultiplier: 1, icon: <Gamepad2 className="text-yellow-400" /> },
-  { id: 'keyboard', name: 'Bàn Phím Cơ', baseCost: 150, clickMultiplier: 5, icon: <Zap className="text-red-400" /> },
-  { id: 'ide', name: 'IDE xịn', baseCost: 2000, clickMultiplier: 50, icon: <Atom className="text-teal-400" /> },
+  { id: 'keyboard', name: 'Bàn Phím Cơ', baseCost: 150, clickMultiplier: 5, icon: <Star className="text-red-400" /> },
+  { id: 'ide', name: 'IDE xịn', baseCost: 2000, clickMultiplier: 50, icon: <Palette className="text-teal-400" /> },
 ];
 
 type FloatingNumber = { id: number; value: string; x: number; y: number; isCritical: boolean };
@@ -62,8 +60,6 @@ export default function BugBountyPage() {
   const [bossBug, setBossBug] = useState<{ hp: number, maxHp: number } | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>(initialAchievements);
   const [isAchievementsOpen, setIsAchievementsOpen] = useState(false);
-  const [purchasedSkins, setPurchasedSkins] = useState<string[]>(['default']);
-  const [equippedSkin, setEquippedSkin] = useState<EditorTheme>(editorThemes[0]);
 
   const { toast } = useToast();
 
@@ -209,33 +205,6 @@ export default function BugBountyPage() {
     });
   }
 
-  // --- Skins Logic ---
-  const purchaseSkin = (skin: EditorTheme) => {
-    if (score < skin.cost) {
-      toast({ title: "Không đủ điểm!", description: `Bạn cần ${formatNumber(skin.cost)} điểm để mua skin này.`, variant: "destructive" });
-      return;
-    }
-    if (purchasedSkins.includes(skin.id)) {
-        toast({ title: "Đã sở hữu!", description: "Bạn đã có skin này rồi." });
-        return;
-    }
-
-    setScore(s => s - skin.cost);
-    setPurchasedSkins(current => [...current, skin.id]);
-    playUpgradeSound();
-    toast({ title: "Mua thành công!", description: `Bạn đã mở khóa skin ${skin.name}!`, className: "bg-green-500 text-white" });
-  };
-
-  const equipSkin = (skin: EditorTheme) => {
-    if (!purchasedSkins.includes(skin.id)) {
-      toast({ title: "Chưa sở hữu skin!", description: "Hãy mua skin này trước khi trang bị.", variant: "destructive" });
-      return;
-    }
-    setEquippedSkin(skin);
-    toast({ title: "Đã trang bị!", description: `Đã áp dụng skin ${skin.name}.` });
-  };
-
-
   // --- Power-ups and Events ---
 
   const activatePowerUp = () => {
@@ -329,7 +298,7 @@ export default function BugBountyPage() {
                 animate={{ scale: 1, opacity: 1, rotate: [0, 10, -10, 0] }}
                 exit={{ scale: 0, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                className="absolute z-10"
+                className="fixed z-40" // Use fixed positioning
                 style={{ top: powerUpPosition.top, left: powerUpPosition.left }}
             >
                 <Button variant="ghost" size="icon" className="h-20 w-20" onClick={activatePowerUp}>
@@ -354,55 +323,17 @@ export default function BugBountyPage() {
         </motion.div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-10 gap-8 max-w-7xl mx-auto">
-        {/* Left Column: Stats & Actions */}
-        <div className="lg:col-span-3 space-y-6">
-            <StatsDisplay score={score} sps={sps} prestigeBonus={prestigeBonus} stats={stats} />
-            
-            <Card>
-                <CardHeader>
-                    <CardTitle>Hành Động</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <Button onClick={() => setIsAchievementsOpen(true)} variant="outline" className="w-full">
-                        <Award className="mr-2" /> Xem Thành Tựu ({achievements.filter(a => a.unlocked).length}/{achievements.length})
-                    </Button>
-                     <Tooltip>
-                        <TooltipTrigger asChild>
-                            <div className="w-full">
-                                <Button onClick={handlePrestige} disabled={!isPrestigeReady} className="w-full bg-purple-600 hover:bg-purple-700">
-                                    <History className="mr-2" /> Tái Sinh (+1 Lợi thế)
-                                </Button>
-                            </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Đạt 1,000,000 điểm để tái sinh. <br /> Reset game nhưng nhận +10% sản lượng điểm vĩnh viễn.</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>Bảng Xếp Hạng (Beta)</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <ul className="space-y-2 text-sm">
-                        <li className="flex justify-between"><span>1. CodeWizard</span> <span className="font-bold text-primary">5.12T</span></li>
-                        <li className="flex justify-between"><span>2. BugSmasher</span> <span className="font-bold text-primary">4.89T</span></li>
-                        <li className="flex justify-between"><span>3. You</span> <span className="font-bold text-yellow-400">{formatNumber(stats.totalScore)}</span></li>
-                        <li className="flex justify-between"><span>4. ScriptKid</span> <span className="font-bold text-primary">10.5B</span></li>
-                    </ul>
-                </CardContent>
-            </Card>
-        </div>
-
-        {/* Middle Column: The Bug */}
-        <div className="lg:col-span-4 flex flex-col items-center gap-6">
-            <div className="w-full relative">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        {/* Left Column: Main Game Area */}
+        <div className="lg:col-span-2 space-y-6">
+          <Card className="h-full flex flex-col">
+            <CardHeader>
+                <StatsDisplay score={score} sps={sps} prestigeBonus={prestigeBonus} stats={stats} />
+            </CardHeader>
+            <CardContent className="flex-grow flex items-center justify-center relative">
                 {bossBug ? (
-                     <>
-                        <div className="w-full mb-2">
+                     <div className="w-full flex flex-col items-center">
+                        <div className="w-full mb-2 max-w-md">
                             <p className="text-center font-bold text-red-500">BUG TRÙM</p>
                             <div className="h-4 w-full bg-muted rounded-full">
                                 <motion.div 
@@ -425,43 +356,86 @@ export default function BugBountyPage() {
                                 TẤN CÔNG
                             </Button>
                         </motion.div>
-                    </>
+                    </div>
                 ) : (
-                    <FakeCodeEditor 
-                        onClick={handleBugFixClick} 
-                        bugsFixed={stats.bugsFixed} 
-                        theme={equippedSkin}
-                    />
+                    <motion.button 
+                        onClick={handleBugFixClick}
+                        whileTap={{ scale: 0.95 }}
+                        className="relative w-full max-w-lg aspect-video rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary"
+                    >
+                        <Image 
+                            src="https://i.pinimg.com/originals/21/11/61/21116158daaeb1459b4ec0758505e1ad.gif"
+                            alt="Fixing a bug"
+                            fill
+                            className="object-cover"
+                            unoptimized
+                        />
+                         <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors" />
+                    </motion.button>
                 )}
-            </div>
-             <p className="text-center text-muted-foreground">Click Power: {formatNumber(clickPower * prestigeBonus)}</p>
+            </CardContent>
+             <div className="p-6 flex flex-wrap items-center justify-center gap-4">
+                  <Button onClick={() => setIsAchievementsOpen(true)} variant="outline" size="lg">
+                    <Award className="mr-2" /> Xem Thành Tựu ({achievements.filter(a => a.unlocked).length}/{achievements.length})
+                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                        <div className="w-full max-w-xs">
+                            <Button onClick={handlePrestige} disabled={!isPrestigeReady} size="lg" className="w-full bg-purple-600 hover:bg-purple-700">
+                                <History className="mr-2" /> Tái Sinh (+1 Lợi thế)
+                            </Button>
+                        </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Đạt 1,000,000 điểm để tái sinh. <br /> Reset game nhưng nhận +10% sản lượng điểm vĩnh viễn.</p>
+                    </TooltipContent>
+                </Tooltip>
+             </div>
+          </Card>
         </div>
 
-        {/* Right Column: Upgrades */}
-        <div className="lg:col-span-3 space-y-6">
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><TrendingUp /> Nâng Cấp Tự Động (SPS)</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                    {spsUpgrades.map(u => <UpgradeCard key={u.id} upgrade={u} score={score} onPurchase={() => purchaseUpgrade(u.id, 'sps')} />)}
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Star /> Nâng Cấp Click</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                    {clickUpgrades.map(u => <UpgradeCard key={u.id} upgrade={u} score={score} onPurchase={() => purchaseUpgrade(u.id, 'click')} />)}
-                </CardContent>
-            </Card>
-            <SkinShop 
-                score={score}
-                purchasedSkins={purchasedSkins}
-                equippedSkinId={equippedSkin.id}
-                onPurchase={purchaseSkin}
-                onEquip={equipSkin}
-            />
+        {/* Right Column: Upgrades & Leaderboard */}
+        <div className="lg:col-span-1 space-y-6">
+            <Tabs defaultValue="upgrades" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="upgrades">Nâng Cấp</TabsTrigger>
+                    <TabsTrigger value="leaderboard">Xếp Hạng</TabsTrigger>
+                </TabsList>
+                <TabsContent value="upgrades" className="mt-4 space-y-4">
+                     <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-xl"><TrendingUp /> Tự Động (SPS)</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                            {spsUpgrades.map(u => <UpgradeCard key={u.id} upgrade={u} score={score} onPurchase={() => purchaseUpgrade(u.id, 'sps')} />)}
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-xl"><Star /> Click</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                            {clickUpgrades.map(u => <UpgradeCard key={u.id} upgrade={u} score={score} onPurchase={() => purchaseUpgrade(u.id, 'click')} />)}
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+                <TabsContent value="leaderboard" className="mt-4">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Bảng Xếp Hạng (Beta)</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <ul className="space-y-2 text-sm">
+                                <li className="flex justify-between p-2 rounded-md bg-muted/50"><span>1. CodeWizard</span> <span className="font-bold text-primary">5.12T</span></li>
+                                <li className="flex justify-between p-2 rounded-md bg-muted/50"><span>2. BugSmasher</span> <span className="font-bold text-primary">4.89T</span></li>
+                                <li className="flex justify-between p-2 rounded-md bg-yellow-400/20 text-yellow-200"><span>3. You</span> <span className="font-bold">{formatNumber(stats.totalScore)}</span></li>
+                                <li className="flex justify-between p-2 rounded-md bg-muted/50"><span>4. ScriptKid</span> <span className="font-bold text-primary">10.5B</span></li>
+                                <li className="flex justify-between p-2 rounded-md bg-muted/50"><span>5. PolyMorphic</span> <span className="font-bold text-primary">8.2B</span></li>
+                            </ul>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+            </Tabs>
         </div>
       </div>
 
@@ -470,10 +444,7 @@ export default function BugBountyPage() {
         onClose={() => setIsAchievementsOpen(false)}
         achievements={achievements}
        />
-
     </div>
     </TooltipProvider>
   );
 }
-
-    
