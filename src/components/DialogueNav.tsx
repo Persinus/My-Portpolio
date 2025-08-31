@@ -11,6 +11,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { Button } from './ui/button';
 import Image from 'next/image';
@@ -27,6 +28,7 @@ const gameLinks = [
     { href: '/challenge/ai-quiz', label: 'AI Code Quiz'},
     { href: '/challenge/2048', label: '2048: Dev Edition'},
     { href: '/challenge/bug-bounty', label: 'Bug Bounty Hunter'},
+    { href: '/challenge/character-movement', label: '3D Character Movement'},
 ]
 
 export default function DialogueNav() {
@@ -63,6 +65,7 @@ export default function DialogueNav() {
                                      <DropdownMenuItem asChild>
                                          <Link href="/challenge" onClick={playNavigationSound}>Challenge Arcade</Link>
                                      </DropdownMenuItem>
+                                     <DropdownMenuSeparator />
                                     {gameLinks.map(({href: gameHref, label: gameLabel}) => (
                                         <DropdownMenuItem key={gameHref} asChild>
                                              <Link href={gameHref} onClick={playNavigationSound}>

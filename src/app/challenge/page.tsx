@@ -28,6 +28,13 @@ const games = [
     image: 'https://picsum.photos/400/200',
     imageHint: 'code dashboard'
   },
+  {
+    title: '3D Character Movement',
+    slug: '/challenge/character-movement',
+    description: 'Control a character in a 3D space. Built with Three.js and React Three Fiber.',
+    image: 'https://picsum.photos/400/200',
+    imageHint: '3d character'
+  }
 ];
 
 export default function ChallengePage() {
