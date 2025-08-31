@@ -41,7 +41,7 @@ export default function ChallengePage() {
           Chọn một trò chơi để thử thách kỹ năng và giải trí.
         </p>
       </div>
-      <div className="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
         {games.map((game) => (
           <RippleEffect key={game.slug}>
             <Card className="flex h-full flex-col overflow-hidden border-2 border-primary/20 bg-card/50 backdrop-blur-sm">
