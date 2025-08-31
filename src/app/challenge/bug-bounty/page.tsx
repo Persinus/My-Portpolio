@@ -14,6 +14,7 @@ import StatsDisplay from '@/components/bug-bounty/StatsDisplay';
 import UpgradeCard from '@/components/bug-bounty/UpgradeCard';
 import AchievementsDialog from '@/components/bug-bounty/AchievementsDialog';
 import { type Achievement, checkAchievements, initialAchievements } from '@/components/bug-bounty/achievements';
+import FakeCodeEditor from '@/components/bug-bounty/FakeCodeEditor';
 
 // --- Helper Functions and Initial State ---
 
@@ -49,7 +50,6 @@ export default function BugBountyPage() {
   const [spsUpgrades, setSpsUpgrades] = useState(() => initialSpsUpgrades.map(u => ({ ...u, level: 0, cost: u.baseCost })));
   const [clickUpgrades, setClickUpgrades] = useState(() => initialClickUpgrades.map(u => ({ ...u, level: 0, cost: u.baseCost })));
   const [floatingNumbers, setFloatingNumbers] = useState<FloatingNumber[]>([]);
-  const [bugShake, setBugShake] = useState(0);
   const [isPowerUpActive, setIsPowerUpActive] = useState(false);
   const [powerUpPosition, setPowerUpPosition] = useState<{ top: string, left: string } | null>(null);
   const [prestigePoints, setPrestigePoints] = useState(0);
@@ -125,7 +125,7 @@ export default function BugBountyPage() {
     }, 2000);
   }, []);
 
-  const handleBugFixClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleBugFixClick = (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>) => {
     if (bossBug) {
         handleBossClick(e);
         return;
@@ -143,7 +143,6 @@ export default function BugBountyPage() {
     setScore(score + baseClickValue);
     setStats(prev => ({ ...prev, totalScore: prev.totalScore + baseClickValue, totalClicks: prev.totalClicks + 1, bugsFixed: prev.bugsFixed + 1}));
     addFloatingNumber(baseClickValue, e.clientX, e.clientY, isCritical);
-    setBugShake(s => s + 1);
   };
   
   const purchaseUpgrade = (id: string, type: 'sps' | 'click') => {
@@ -227,14 +226,13 @@ export default function BugBountyPage() {
     toast({ title: "Bug Trùm Xuất Hiện!", description: "Click liên tục để tiêu diệt nó!", className: 'bg-red-700 text-white border-red-500' });
   }
 
-  const handleBossClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleBossClick = (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>) => {
     if (!bossBug) return;
     
     let baseClickValue = clickPower * prestigeBonus;
     if (isPowerUpActive) baseClickValue *= 2;
 
     const newHp = bossBug.hp - baseClickValue;
-    setBugShake(s => s + 1);
     addFloatingNumber(baseClickValue, e.clientX, e.clientY, true);
 
     if (newHp <= 0) {
@@ -352,34 +350,35 @@ export default function BugBountyPage() {
         {/* Middle Column: The Bug */}
         <div className="lg:col-span-4 flex flex-col items-center gap-6">
             <div className="w-full relative">
-                {bossBug && (
-                    <div className="w-full mb-2">
-                        <p className="text-center font-bold text-red-500">BUG TRÙM</p>
-                        <div className="h-4 w-full bg-muted rounded-full">
-                            <motion.div 
-                                className="h-full bg-red-600 rounded-full"
-                                initial={{width: '100%'}}
-                                animate={{width: `${(bossBug.hp / bossBug.maxHp) * 100}%`}}
-                            />
+                {bossBug ? (
+                     <>
+                        <div className="w-full mb-2">
+                            <p className="text-center font-bold text-red-500">BUG TRÙM</p>
+                            <div className="h-4 w-full bg-muted rounded-full">
+                                <motion.div 
+                                    className="h-full bg-red-600 rounded-full"
+                                    initial={{width: '100%'}}
+                                    animate={{width: `${(bossBug.hp / bossBug.maxHp) * 100}%`}}
+                                />
+                            </div>
                         </div>
-                    </div>
+                        <motion.div 
+                            animate={{ x: [0, -5, 5, -5, 5, 0] }}
+                            transition={{ duration: 0.3, repeat: Infinity }}
+                            whileTap={{ scale: 0.9 }}
+                        >
+                            <Button 
+                                onClick={handleBossClick} 
+                                className="h-64 w-64 rounded-full flex-col gap-2 text-2xl bg-red-800 hover:bg-red-900 glow-destructive"
+                            >
+                                <Bug className="h-24 w-24"/>
+                                TẤN CÔNG
+                            </Button>
+                        </motion.div>
+                    </>
+                ) : (
+                    <FakeCodeEditor onClick={handleBugFixClick} bugsFixed={stats.bugsFixed} />
                 )}
-                <motion.div 
-                    key={bugShake}
-                    animate={{ x: [0, -5, 5, -5, 5, 0] }}
-                    transition={{ duration: 0.3 }}
-                    whileTap={{ scale: 0.9 }}
-                >
-                    <Button 
-                        onClick={handleBugFixClick} 
-                        className={cn("h-64 w-64 rounded-full flex-col gap-2 text-2xl",
-                         bossBug ? 'bg-red-800 hover:bg-red-900 glow-destructive' : 'glow-primary'
-                        )}
-                    >
-                        <Bug className="h-24 w-24"/>
-                        {bossBug ? `TẤN CÔNG` : 'Sửa Bug'}
-                    </Button>
-                </motion.div>
             </div>
              <p className="text-center text-muted-foreground">Click Power: {formatNumber(clickPower * prestigeBonus)}</p>
         </div>
@@ -416,3 +415,4 @@ export default function BugBountyPage() {
   );
 }
 
+    
