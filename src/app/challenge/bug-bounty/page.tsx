@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Award, Bug, Coffee, History, TrendingUp, Atom, Gamepad2, Star, CheckCircle2, ShoppingCart, List, LayoutGrid } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -529,3 +529,5 @@ export default function BugBountyPage() {
     </TooltipProvider>
   );
 }
+
+    
