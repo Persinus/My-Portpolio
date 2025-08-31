@@ -3,9 +3,9 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Award, Bug, Coffee, History, TrendingUp, Atom, Palette, Gamepad2, Star, CheckCircle2, ShoppingCart } from 'lucide-react';
+import { Award, Bug, Coffee, History, TrendingUp, Atom, Gamepad2, Star, CheckCircle2, ShoppingCart, List, LayoutGrid } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -37,11 +37,13 @@ const initialSpsUpgrades = [
 const initialClickUpgrades = [
   { id: 'mouse', name: 'Chuột Gaming', baseCost: 10, clickMultiplier: 1, icon: <Gamepad2 className="text-yellow-400" /> },
   { id: 'keyboard', name: 'Bàn Phím Cơ', baseCost: 150, clickMultiplier: 5, icon: <Star className="text-red-400" /> },
-  { id: 'ide', name: 'IDE xịn', baseCost: 2000, clickMultiplier: 50, icon: <Palette className="text-teal-400" /> },
+  { id: 'ide', name: 'IDE xịn', baseCost: 2000, clickMultiplier: 50, icon: <List className="text-teal-400" /> },
 ];
 
 type FloatingNumber = { id: number; value: string; x: number; y: number; isCritical: boolean };
 type RandomEvent = { id: string, message: string, effect: () => void, duration: number };
+
+const SAVE_GAME_KEY = 'portfolio_quest_bug_bounty_save';
 
 export default function BugBountyPage() {
   // --- State Hooks ---
@@ -71,8 +73,83 @@ export default function BugBountyPage() {
   const playUpgradeSound = useSound('/audio/upgrade.mp3', 0.4);
   const playAchievementSound = useSound('/audio/achievement.mp3', 0.6);
 
+  // --- Save/Load Game Logic ---
+  const saveGame = useCallback(() => {
+    try {
+        const gameState = {
+            score,
+            stats,
+            spsUpgrades: spsUpgrades.map(u => ({ id: u.id, level: u.level })),
+            clickUpgrades: clickUpgrades.map(u => ({ id: u.id, level: u.level })),
+            prestigePoints,
+            achievements,
+            lastSaveTime: Date.now()
+        };
+        localStorage.setItem(SAVE_GAME_KEY, JSON.stringify(gameState));
+    } catch (error) {
+        console.error("Failed to save game:", error);
+    }
+  }, [score, stats, spsUpgrades, clickUpgrades, prestigePoints, achievements]);
+
+  const loadGame = useCallback(() => {
+    try {
+        const savedStateJSON = localStorage.getItem(SAVE_GAME_KEY);
+        if (!savedStateJSON) {
+            console.log("No save file found, starting new game.");
+            return;
+        };
+
+        const savedState = JSON.parse(savedStateJSON);
+
+        const newSpsUpgrades = initialSpsUpgrades.map(u => {
+            const savedUpgrade = savedState.spsUpgrades.find(su => su.id === u.id);
+            const level = savedUpgrade ? savedUpgrade.level : 0;
+            return { ...u, level, cost: Math.floor(u.baseCost * Math.pow(1.15, level)) };
+        });
+
+        const newClickUpgrades = initialClickUpgrades.map(u => {
+            const savedUpgrade = savedState.clickUpgrades.find(su => su.id === u.id);
+            const level = savedUpgrade ? savedUpgrade.level : 0;
+            return { ...u, level, cost: Math.floor(u.baseCost * Math.pow(1.15, level)) };
+        });
+
+        setSpsUpgrades(newSpsUpgrades);
+        setClickUpgrades(newClickUpgrades);
+        setStats(savedState.stats);
+        setPrestigePoints(savedState.prestigePoints);
+        setAchievements(savedState.achievements);
+        
+        const newSps = newSpsUpgrades.reduce((total, u) => total + u.level * u.sps, 0);
+        setSps(newSps);
+        const newClickPower = newClickUpgrades.reduce((total, u) => total + u.level * u.clickMultiplier, 1);
+        setClickPower(newClickPower);
+        
+        const timeSinceLastSave = Date.now() - (savedState.lastSaveTime || Date.now());
+        const offlineSeconds = Math.max(0, timeSinceLastSave / 1000);
+        const offlineEarnings = offlineSeconds * newSps * (1 + (savedState.prestigePoints * 0.1)) * 0.5; // 50% offline earning
+        const finalScore = savedState.score + offlineEarnings;
+        setScore(finalScore);
+
+        if (offlineEarnings > 1) {
+            toast({
+                title: "Chào Mừng Trở Lại!",
+                description: `Bạn đã kiếm được ${formatNumber(offlineEarnings)} điểm khi vắng mặt!`,
+                className: 'bg-green-500 text-white border-green-500'
+            });
+        }
+        
+    } catch (error) {
+        console.error("Failed to load game:", error);
+        toast({ title: "Lỗi tải game", description: "Không thể tải tiến trình đã lưu, bắt đầu game mới.", variant: "destructive" });
+    }
+  }, [toast]);
 
   // --- Game Loop and Timers ---
+  useEffect(() => {
+    loadGame();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     const gameLoop = setInterval(() => {
       const spsWithBonus = sps * prestigeBonus;
@@ -98,14 +175,18 @@ export default function BugBountyPage() {
         }
     }, 20000);
 
+    const saveInterval = setInterval(() => {
+        saveGame();
+    }, 5000);
 
     return () => {
       clearInterval(gameLoop);
       clearInterval(powerUpSpawner);
       clearInterval(randomEventSpawner);
       clearInterval(bossBugSpawner);
+      clearInterval(saveInterval);
     };
-  }, [sps, prestigeBonus, powerUpPosition, currentEvent, bossBug]);
+  }, [sps, prestigeBonus, powerUpPosition, currentEvent, bossBug, saveGame]);
 
   useEffect(() => {
     setIsPrestigeReady(stats.totalScore >= 1_000_000);
@@ -398,8 +479,8 @@ export default function BugBountyPage() {
         <div className="lg:col-span-1 space-y-6">
             <Tabs defaultValue="upgrades" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="upgrades">Nâng Cấp</TabsTrigger>
-                    <TabsTrigger value="leaderboard">Xếp Hạng</TabsTrigger>
+                    <TabsTrigger value="upgrades"><TrendingUp className="mr-2" />Nâng Cấp</TabsTrigger>
+                    <TabsTrigger value="leaderboard"><LayoutGrid className="mr-2"/>Xếp Hạng</TabsTrigger>
                 </TabsList>
                 <TabsContent value="upgrades" className="mt-4 space-y-4">
                      <Card>

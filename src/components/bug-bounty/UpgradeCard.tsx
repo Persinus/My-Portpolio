@@ -35,32 +35,30 @@ export default function UpgradeCard({ upgrade, score, onPurchase }: UpgradeCardP
     : `+${upgrade.clickMultiplier} sức mạnh click mỗi cấp`;
 
   return (
-    <Card className={cn("flex items-center p-3 transition-colors", score < upgrade.cost && "bg-muted/50 text-muted-foreground")}>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Card className={cn("flex items-center p-3 transition-colors", score < upgrade.cost && "bg-muted/50 text-muted-foreground")}>
             <div className="mr-4 text-2xl w-8 text-center">{upgrade.icon}</div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{benefitText}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
 
-      <div className="flex-grow">
-        <h4 className="font-bold">{upgrade.name}</h4>
-        <p className="text-sm">Giá: {formatNumber(upgrade.cost)} | Cấp: {upgrade.level}</p>
-      </div>
-      <Button 
-        onClick={onPurchase}
-        disabled={score < upgrade.cost}
-        variant="outline"
-        size="sm"
-      >
-        <PlusCircle className="mr-2 h-4 w-4"/> Mua
-      </Button>
-    </Card>
+            <div className="flex-grow">
+              <h4 className="font-bold">{upgrade.name}</h4>
+              <p className="text-sm">Giá: {formatNumber(upgrade.cost)} | Cấp: {upgrade.level}</p>
+            </div>
+            <Button 
+              onClick={onPurchase}
+              disabled={score < upgrade.cost}
+              variant="outline"
+              size="sm"
+            >
+              <PlusCircle className="mr-2 h-4 w-4"/> Mua
+            </Button>
+          </Card>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{benefitText}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
-
-    
