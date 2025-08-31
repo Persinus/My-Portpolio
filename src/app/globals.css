@@ -3,7 +3,35 @@
 @tailwind utilities;
 
 @layer base {
-  :root, .theme-fantasy {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 271 88% 56%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 222.2 84% 4.9%;
+    --chart-1: 271 88% 56%;
+    --chart-2: 182 100% 75%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
     --background: 224 71% 4%; /* #010816 */
     --foreground: 210 40% 98%;
     --card: 224 71% 4%;
@@ -29,62 +57,6 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-  }
-
-  .theme-cyberpunk {
-    --background: 240 10% 4%; /* Near black with blue tint */
-    --foreground: 210 40% 98%;
-    --card: 240 10% 4%;
-    --card-foreground: 210 40% 98%;
-    --popover: 240 10% 4%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 315 100% 50%; /* Hot Pink */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 240 10% 12%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 240 10% 12%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 180 100% 50%; /* Cyan */
-    --accent-foreground: 240 10% 4%;
-    --destructive: 0 100% 50%; /* Bright Red */
-    --destructive-foreground: 210 40% 98%;
-    --border: 315 100% 50%;
-    --input: 240 10% 12%;
-    --ring: 315 100% 50%;
-    --chart-1: 315 100% 50%;
-    --chart-2: 180 100% 50%;
-    --chart-3: 60 100% 50%; /* Yellow */
-    --chart-4: 280 100% 50%; /* Purple */
-    --chart-5: 200 100% 50%; /* Light Blue */
-    --radius: 0rem;
-  }
-
-  .theme-dungeon {
-    --background: 23 12% 8%; /* Dark, earthy stone */
-    --foreground: 30 10% 85%; /* Off-white, like parchment */
-    --card: 23 12% 8%;
-    --card-foreground: 30 10% 85%;
-    --popover: 23 12% 8%;
-    --popover-foreground: 30 10% 85%;
-    --primary: 40 95% 60%; /* Glistening Gold */
-    --primary-foreground: 40 10% 10%;
-    --secondary: 25 15% 15%;
-    --secondary-foreground: 30 10% 85%;
-    --muted: 25 15% 15%;
-    --muted-foreground: 30 10% 60%;
-    --accent: 140 80% 65%; /* Emerald Green */
-    --accent-foreground: 23 12% 8%;
-    --destructive: 0 70% 45%; /* Deep Red */
-    --destructive-foreground: 30 10% 85%;
-    --border: 40 95% 60%;
-    --input: 25 15% 15%;
-    --ring: 40 95% 60%;
-    --chart-1: 40 95% 60%; /* Gold */
-    --chart-2: 140 80% 65%;/* Emerald */
-    --chart-3: 200 70% 55%;/* Sapphire */
-    --chart-4: 0 70% 45%;   /* Ruby */
-    --chart-5: 280 60% 60%;/* Amethyst */
-    --radius: 0.375rem; /* 6px */
   }
 }
 

@@ -32,8 +32,8 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <ThemeProvider
           attribute="class"
-          defaultTheme="theme-fantasy"
-          enableSystem={false}
+          defaultTheme="dark"
+          enableSystem
           disableTransitionOnChange
         >
           <KonamiWrapper>
