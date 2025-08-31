@@ -1,28 +1,33 @@
+
 'use client';
 
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 // This hook preloads and plays sounds to minimize delay.
 export const useSound = (soundPath: string, volume: number = 0.5) => {
-  const audio = useMemo(() => {
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    // Audio is a browser-only API
     if (typeof Audio !== 'undefined') {
-      const a = new Audio(soundPath);
-      a.volume = volume;
-      return a;
+      const audioInstance = new Audio(soundPath);
+      audioInstance.volume = volume;
+      setAudio(audioInstance);
     }
-    return undefined;
   }, [soundPath, volume]);
 
   const playSound = useCallback(() => {
     if (audio) {
       audio.currentTime = 0; // Rewind to the start
-      // Temporarily disabled to prevent console errors with empty audio files.
-      // To re-enable, add valid audio files to /public/audio and uncomment the line below.
-      // audio.play().catch(err => {
-      //   console.error(`Could not play sound: ${err.message}`);
-      // });
+      audio.play().catch(err => {
+         // This can happen if the user hasn't interacted with the page yet.
+         // It's a browser security feature. We can safely ignore it.
+         console.log(`Could not play sound ${soundPath}: ${err.message}`);
+      });
     }
-  }, [audio]);
+  }, [audio, soundPath]);
 
   return playSound;
 };
+
+    

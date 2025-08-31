@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Award, Bug, Coffee, Cpu, HelpCircle, PlusCircle, Server, ShieldCheck, Zap, History, Star, TrendingUp, Atom, Palette } from 'lucide-react';
+import { Award, Bug, Coffee, Cpu, HelpCircle, PlusCircle, Server, ShieldCheck, Zap, History, Star, TrendingUp, Atom, Palette, Gamepad2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -17,6 +17,7 @@ import { type Achievement, checkAchievements, initialAchievements } from '@/comp
 import FakeCodeEditor from '@/components/bug-bounty/FakeCodeEditor';
 import SkinShop from '@/components/bug-bounty/SkinShop';
 import { type EditorTheme, editorThemes } from '@/components/bug-bounty/editorThemes';
+import { useSound } from '@/hooks/useSound';
 
 
 // --- Helper Functions and Initial State ---
@@ -36,9 +37,9 @@ const initialSpsUpgrades = [
 ];
 
 const initialClickUpgrades = [
-  { id: 'mouse', name: 'Chuột Gaming', baseCost: 10, clickMultiplier: 1, icon: <Zap className="text-yellow-400" /> },
+  { id: 'mouse', name: 'Chuột Gaming', baseCost: 10, clickMultiplier: 1, icon: <Gamepad2 className="text-yellow-400" /> },
   { id: 'keyboard', name: 'Bàn Phím Cơ', baseCost: 150, clickMultiplier: 5, icon: <Zap className="text-red-400" /> },
-  { id: 'ide', name: 'IDE xịn', baseCost: 2000, clickMultiplier: 50, icon: <Zap className="text-teal-400" /> },
+  { id: 'ide', name: 'IDE xịn', baseCost: 2000, clickMultiplier: 50, icon: <Atom className="text-teal-400" /> },
 ];
 
 type FloatingNumber = { id: number; value: string; x: number; y: number; isCritical: boolean };
@@ -67,6 +68,13 @@ export default function BugBountyPage() {
   const { toast } = useToast();
 
   const prestigeBonus = useMemo(() => 1 + (prestigePoints * 0.1), [prestigePoints]);
+  
+  // --- Sound Effects ---
+  const playClickSound = useSound('/audio/click.mp3', 0.3);
+  const playCritSound = useSound('/audio/crit.mp3', 0.5);
+  const playUpgradeSound = useSound('/audio/upgrade.mp3', 0.4);
+  const playAchievementSound = useSound('/audio/achievement.mp3', 0.6);
+
 
   // --- Game Loop and Timers ---
   useEffect(() => {
@@ -112,13 +120,14 @@ export default function BugBountyPage() {
     const newlyAchieved = newAchievements.find((ach, i) => ach.unlocked && !achievements[i].unlocked);
     if (newlyAchieved) {
       setAchievements(newAchievements);
+      playAchievementSound();
       toast({
         title: "Đạt thành tựu mới!",
         description: newlyAchieved.name,
         className: 'bg-yellow-500 text-black border-yellow-500'
       });
     }
-  }, [stats, achievements, toast, spsUpgrades, clickUpgrades]);
+  }, [stats, achievements, toast, spsUpgrades, clickUpgrades, playAchievementSound]);
 
   // --- Core Game Logic ---
 
@@ -142,7 +151,11 @@ export default function BugBountyPage() {
     if (Math.random() < 0.1) {
       baseClickValue *= Math.floor(Math.random() * 6) + 5;
       isCritical = true;
+      playCritSound();
+    } else {
+      playClickSound();
     }
+
     if (isPowerUpActive) baseClickValue *= 2;
 
     setScore(score + baseClickValue);
@@ -161,6 +174,7 @@ export default function BugBountyPage() {
       return;
     }
 
+    playUpgradeSound();
     setScore(score - upgrade.cost);
 
     const newUpgrades = upgrades.map(u => u.id === id
@@ -180,6 +194,7 @@ export default function BugBountyPage() {
 
   const handlePrestige = () => {
     if (!isPrestigeReady) return;
+    playAchievementSound();
     setScore(0);
     setSps(0);
     setClickPower(1);
@@ -207,6 +222,7 @@ export default function BugBountyPage() {
 
     setScore(s => s - skin.cost);
     setPurchasedSkins(current => [...current, skin.id]);
+    playUpgradeSound();
     toast({ title: "Mua thành công!", description: `Bạn đã mở khóa skin ${skin.name}!`, className: "bg-green-500 text-white" });
   };
 
@@ -226,6 +242,7 @@ export default function BugBountyPage() {
     if (isPowerUpActive) return;
     setPowerUpPosition(null);
     setIsPowerUpActive(true);
+    playUpgradeSound();
     toast({
         title: "Cà Phê Tăng Lực!",
         description: "Điểm mỗi lần nhấp chuột x2 trong 10 giây!",
@@ -263,6 +280,7 @@ export default function BugBountyPage() {
     let baseClickValue = clickPower * prestigeBonus;
     if (isPowerUpActive) baseClickValue *= 2;
 
+    playCritSound();
     const newHp = bossBug.hp - baseClickValue;
     addFloatingNumber(baseClickValue, e.clientX, e.clientY, true);
 
@@ -271,6 +289,7 @@ export default function BugBountyPage() {
         setScore(s => s + reward);
         setStats(prev => ({...prev, bugsFixed: prev.bugsFixed + 100, totalScore: prev.totalScore + reward}));
         setBossBug(null);
+        playAchievementSound();
         toast({ title: "Đã Diệt Bug Trùm!", description: `Phần thưởng: +${formatNumber(reward)} điểm!`, className: 'bg-green-500 text-white border-green-500'});
     } else {
         setBossBug({ ...bossBug, hp: newHp });
@@ -456,7 +475,5 @@ export default function BugBountyPage() {
     </TooltipProvider>
   );
 }
-
-    
 
     
