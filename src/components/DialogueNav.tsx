@@ -17,18 +17,17 @@ import { Button } from './ui/button';
 import Image from 'next/image';
 
 const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/portfolio', label: 'Portfolio' },
+  { href: '/', label: 'Trang Chủ' },
+  { href: '/portfolio', label: 'Dự Án' },
   { href: '/blog', label: 'Blog' },
-  { href: '/challenge', label: 'Challenge' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/challenge', label: 'Thử Thách' },
+  { href: '/contact', label: 'Liên Hệ' },
 ];
 
 const gameLinks = [
     { href: '/challenge/ai-quiz', label: 'AI Code Quiz'},
-    { href: '/challenge/2048', label: '2048: Dev Edition'},
-    { href: '/challenge/bug-bounty', label: 'Bug Bounty Hunter'},
-    { href: '/challenge/character-movement', label: '3D Character Movement'},
+    { href: '/challenge/2048', label: '2048: Phiên bản Dev'},
+    { href: '/challenge/bug-bounty', label: 'Thợ Săn Bug'},
 ]
 
 export default function DialogueNav() {
@@ -42,7 +41,7 @@ export default function DialogueNav() {
         <ul className="flex items-center gap-2">
             {navLinks.map(({ href, label }) => {
                 const isActive = (href === '/' && pathname === '/') || (href !== '/' && pathname.startsWith(href));
-                const isChallengeDropdown = label === 'Challenge';
+                const isChallengeDropdown = label === 'Thử Thách';
 
                 if (isChallengeDropdown) {
                     return (

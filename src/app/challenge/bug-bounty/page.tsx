@@ -11,10 +11,10 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 const initialUpgrades = [
-  { id: 'dev', name: 'Hire Junior Dev', level: 0, baseCost: 15, cost: 15, sps: 0.1, icon: <Coffee className="text-blue-400" /> },
-  { id: 'test', name: 'Automated Tests', level: 0, baseCost: 100, cost: 100, sps: 1, icon: <Zap className="text-green-400" /> },
-  { id: 'server', name: 'Faster Servers', level: 0, baseCost: 1100, cost: 1100, sps: 8, icon: <Server className="text-purple-400" /> },
-  { id: 'ai', name: 'AI Code Assistant', level: 0, baseCost: 12000, cost: 12000, sps: 47, icon: <Bug className="text-red-400" /> },
+  { id: 'dev', name: 'Thuê Junior Dev', level: 0, baseCost: 15, cost: 15, sps: 0.1, icon: <Coffee className="text-blue-400" /> },
+  { id: 'test', name: 'Test Tự Động', level: 0, baseCost: 100, cost: 100, sps: 1, icon: <Zap className="text-green-400" /> },
+  { id: 'server', name: 'Server Nhanh Hơn', level: 0, baseCost: 1100, cost: 1100, sps: 8, icon: <Server className="text-purple-400" /> },
+  { id: 'ai', name: 'AI Hỗ Trợ Code', level: 0, baseCost: 12000, cost: 12000, sps: 47, icon: <Bug className="text-red-400" /> },
 ];
 
 // Function to format large numbers
@@ -56,7 +56,7 @@ export default function BugBountyPage() {
   const purchaseUpgrade = (upgradeId: string) => {
     const upgrade = upgrades.find(u => u.id === upgradeId);
     if (!upgrade || score < upgrade.cost) {
-      toast({ title: "Not enough points!", description: "Keep fixing those bugs.", variant: "destructive"});
+      toast({ title: "Không đủ điểm!", description: "Tiếp tục sửa bug đi nào.", variant: "destructive"});
       return;
     }
 
@@ -79,8 +79,8 @@ export default function BugBountyPage() {
     setSps(newSps);
 
      toast({
-        title: `Upgraded ${upgrade.name}!`,
-        description: `+${upgrade.sps.toFixed(1)} points/sec`,
+        title: `Đã nâng cấp ${upgrade.name}!`,
+        description: `+${upgrade.sps.toFixed(1)} điểm/giây`,
         className: 'bg-green-500 text-white border-green-500'
       });
   };
@@ -103,10 +103,10 @@ export default function BugBountyPage() {
       </AnimatePresence>
       <div className="text-center mb-12">
         <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">
-          Bug Bounty Hunter
+          Thợ Săn Bug
         </h1>
         <p className="mt-3 max-w-2xl mx-auto text-lg text-muted-foreground">
-          Click the bug to fix it. Buy upgrades to automate your workflow.
+          Nhấp vào con bug để sửa nó. Mua nâng cấp để tự động hóa công việc của bạn.
         </p>
       </div>
 
@@ -116,10 +116,10 @@ export default function BugBountyPage() {
             <Card className="w-full text-center">
                 <CardHeader>
                     <CardTitle className="font-headline text-3xl">{formatNumber(score)}</CardTitle>
-                    <CardDescription>Points</CardDescription>
+                    <CardDescription>Điểm</CardDescription>
                 </CardHeader>
                  <CardContent>
-                    <p className="text-sm text-primary">{formatNumber(sps)} points / second</p>
+                    <p className="text-sm text-primary">{formatNumber(sps)} điểm / giây</p>
                 </CardContent>
             </Card>
             <motion.div whileTap={{ scale: 0.9 }}>
@@ -128,7 +128,7 @@ export default function BugBountyPage() {
                     className="h-48 w-48 rounded-full flex-col gap-2 text-2xl glow-primary"
                 >
                     <Bug className="h-16 w-16"/>
-                    Fix Bug
+                    Sửa Bug
                 </Button>
             </motion.div>
         </div>
@@ -137,8 +137,8 @@ export default function BugBountyPage() {
         <div className="md:col-span-2">
            <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-2xl">Upgrades</CardTitle>
-                    <CardDescription>Purchase upgrades to increase your points-per-second.</CardDescription>
+                    <CardTitle className="font-headline text-2xl">Nâng cấp</CardTitle>
+                    <CardDescription>Mua nâng cấp để tăng điểm mỗi giây.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {upgrades.map(upgrade => (
@@ -146,14 +146,14 @@ export default function BugBountyPage() {
                             <div className="mr-4 text-accent">{upgrade.icon}</div>
                             <div className="flex-grow">
                                 <h4 className="font-bold">{upgrade.name}</h4>
-                                <p className="text-sm">Cost: {formatNumber(upgrade.cost)} | Level: {upgrade.level}</p>
+                                <p className="text-sm">Giá: {formatNumber(upgrade.cost)} | Cấp: {upgrade.level}</p>
                             </div>
                             <Button 
                                 onClick={() => purchaseUpgrade(upgrade.id)}
                                 disabled={score < upgrade.cost}
                                 variant="outline"
                             >
-                                <PlusCircle className="mr-2"/> Buy
+                                <PlusCircle className="mr-2"/> Mua
                             </Button>
                         </Card>
                     ))}
@@ -164,4 +164,3 @@ export default function BugBountyPage() {
     </div>
   );
 }
-

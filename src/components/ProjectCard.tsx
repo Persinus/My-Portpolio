@@ -52,7 +52,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         </CardHeader>
         <CardContent className="flex-grow">
           <div className="mb-4">
-            <h4 className="mb-2 font-semibold">My Role:</h4>
+            <h4 className="mb-2 font-semibold">Vai trò của tôi:</h4>
             <p className="text-sm text-muted-foreground">{project.myRole}</p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -73,7 +73,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
           )}
           <Button asChild className="glow-accent">
               <Link href={`/portfolio/${project.slug}`}>
-                <Play /> {project.gameLink ? "Play Game" : "View Details"}
+                <Play /> {project.gameLink ? "Chơi Game" : "Xem Chi Tiết"}
               </Link>
             </Button>
         </CardFooter>

@@ -10,31 +10,24 @@ const games = [
   {
     title: 'AI Code Quiz',
     slug: '/challenge/ai-quiz',
-    description: 'Test your knowledge against an AI that generates code questions.',
+    description: 'Thử thách kiến thức của bạn với một AI tạo câu hỏi về code.',
     image: 'https://picsum.photos/400/200',
     imageHint: 'AI code'
   },
   {
-    title: '2048: Dev Edition',
+    title: '2048: Phiên bản Dev',
     slug: '/challenge/2048',
-    description: 'Merge tech logos to reach the ultimate goal. A classic game with a dev twist.',
+    description: 'Hợp nhất các logo công nghệ để đạt mục tiêu cuối cùng. Một game kinh điển với chủ đề lập trình.',
     image: 'https://picsum.photos/400/200',
     imageHint: 'puzzle game'
   },
   {
-    title: 'Bug Bounty Hunter',
+    title: 'Thợ Săn Bug',
     slug: '/challenge/bug-bounty',
-    description: 'An idle/clicker game where you fix bugs to buy upgrades and automate your workflow.',
+    description: 'Một game clicker/nhàn rỗi nơi bạn sửa lỗi để mua nâng cấp và tự động hóa công việc.',
     image: 'https://picsum.photos/400/200',
     imageHint: 'code dashboard'
   },
-  {
-    title: '3D Character Movement',
-    slug: '/challenge/character-movement',
-    description: 'Control a character in a 3D space. Built with Three.js and React Three Fiber.',
-    image: 'https://picsum.photos/400/200',
-    imageHint: '3d character'
-  }
 ];
 
 export default function ChallengePage() {
@@ -45,7 +38,7 @@ export default function ChallengePage() {
           Challenge Arcade
         </h1>
         <p className="mt-3 max-w-2xl mx-auto text-lg text-muted-foreground">
-          Select a game to test your skills and have some fun.
+          Chọn một trò chơi để thử thách kỹ năng và giải trí.
         </p>
       </div>
       <div className="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
@@ -70,7 +63,7 @@ export default function ChallengePage() {
                 <CardFooter>
                      <Button asChild className="glow-accent w-full">
                         <Link href={game.slug}>
-                            Play Game <ArrowRight className="ml-2 h-4 w-4" />
+                            Chơi Game <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
                     </Button>
                 </CardFooter>

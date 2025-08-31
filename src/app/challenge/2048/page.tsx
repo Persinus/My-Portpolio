@@ -157,7 +157,7 @@ export default function Game2048Page() {
         <div className="container mx-auto py-12 flex flex-col items-center">
             <div className="text-center mb-8">
                 <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">
-                    2048: Dev Edition
+                    2048: Phiên bản Dev
                 </h1>
                 <p className="mt-3 max-w-2xl mx-auto text-lg text-muted-foreground">
                     Kéo và thả các công nghệ để hợp nhất chúng và đạt được "Portfolio" cuối cùng!
@@ -166,7 +166,7 @@ export default function Game2048Page() {
             
             <Card className="max-w-md w-full">
                 <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>Score: <span className="text-primary">{score}</span></CardTitle>
+                    <CardTitle>Điểm: <span className="text-primary">{score}</span></CardTitle>
                     <Button onClick={resetGame} variant="outline" size="icon">
                         <RotateCw />
                     </Button>
@@ -183,7 +183,7 @@ export default function Game2048Page() {
                                 <Dialog open onOpenChange={resetGame}>
                                     <DialogContent>
                                         <DialogHeader>
-                                            <DialogTitle>{win ? "You Win!" : "Game Over"}</DialogTitle>
+                                            <DialogTitle>{win ? "Bạn đã thắng!" : "Trò chơi kết thúc"}</DialogTitle>
                                             <DialogDescription>
                                                 {win ? `Chúc mừng! Bạn đã tạo ra được Portfolio Quest! Điểm của bạn là ${score}.` : `Rất tiếc! Điểm của bạn là ${score}.`}
                                             </DialogDescription>

@@ -52,14 +52,14 @@ export function ThemeToggle() {
       <AlertDialogTrigger asChild>
         <Button variant="ghost" size="icon">
           <Wand2 className="h-5 w-5" />
-          <span className="sr-only">Toggle theme</span>
+          <span className="sr-only">Đổi giao diện</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Change your world?</AlertDialogTitle>
+          <AlertDialogTitle>Thay đổi thế giới của bạn?</AlertDialogTitle>
           <AlertDialogDescription>
-            Select a new theme to alter the appearance of your quest.
+            Chọn một giao diện mới để thay đổi diện mạo cho cuộc hành trình của bạn.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="py-4 space-y-2">
@@ -77,7 +77,7 @@ export function ThemeToggle() {
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel asChild>
-            <Button variant="ghost">Stay</Button>
+            <Button variant="ghost">Ở lại</Button>
           </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>

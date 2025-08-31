@@ -61,15 +61,15 @@ export default function AIAssistant() {
       const assistantMessage: Message = { role: 'assistant', content: response.answer };
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
-      console.error('AI Assistant Error:', error);
+      console.error('Lỗi Trợ lý AI:', error);
       const errorMessage: Message = {
         role: 'assistant',
-        content: "I seem to be having trouble connecting to my core. Please try again later.",
+        content: "Tôi gặp sự cố khi kết nối đến lõi của mình. Vui lòng thử lại sau.",
       };
        setMessages((prev) => [...prev, errorMessage]);
        toast({
-         title: "Error",
-         description: "Could not get response from AI.",
+         title: "Lỗi",
+         description: "Không thể nhận phản hồi từ AI.",
          variant: "destructive",
        });
     } finally {
@@ -98,9 +98,9 @@ export default function AIAssistant() {
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent className="flex flex-col">
           <SheetHeader>
-            <SheetTitle className="font-headline text-2xl">AI Project Assistant</SheetTitle>
+            <SheetTitle className="font-headline text-2xl">Trợ Lý Dự Án AI</SheetTitle>
             <SheetDescription>
-              Ask me anything about my projects! Select a project and type your question below.
+              Hỏi tôi bất cứ điều gì về các dự án của tôi! Chọn một dự án và nhập câu hỏi của bạn bên dưới.
             </SheetDescription>
           </SheetHeader>
           <div className="flex-grow overflow-hidden">
@@ -152,7 +152,7 @@ export default function AIAssistant() {
             <form onSubmit={handleSubmit} className="w-full space-y-2">
               <Select value={selectedProject} onValueChange={setSelectedProject}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a project" />
+                  <SelectValue placeholder="Chọn một dự án" />
                 </SelectTrigger>
                 <SelectContent>
                   {projects.map((p) => (
@@ -166,7 +166,7 @@ export default function AIAssistant() {
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="e.g., What was your role?"
+                  placeholder="VD: Vai trò của bạn là gì?"
                   autoComplete="off"
                   disabled={isLoading}
                 />

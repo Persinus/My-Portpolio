@@ -40,10 +40,10 @@ export default function AiQuizPage() {
       setChallenge(result);
       setGameState('playing');
     } catch (error) {
-      console.error("Failed to fetch code challenge:", error);
+      console.error("Lỗi khi lấy thử thách code:", error);
       toast({
-        title: "Error",
-        description: "Could not load a new challenge. Please try again.",
+        title: "Lỗi",
+        description: "Không thể tải thử thách mới. Vui lòng thử lại.",
         variant: "destructive"
       });
       setGameState('playing'); // Allow retry
@@ -62,14 +62,14 @@ export default function AiQuizPage() {
     if (answer === challenge?.correctAnswer) {
       setScore(s => s + 10);
       toast({
-        title: "Correct!",
-        description: "+10 points!",
+        title: "Chính xác!",
+        description: "+10 điểm!",
         className: "bg-green-500 text-white border-green-500"
       });
     } else {
       toast({
-        title: "Incorrect!",
-        description: `The correct answer was: ${challenge?.correctAnswer}`,
+        title: "Không chính xác!",
+        description: `Đáp án đúng là: ${challenge?.correctAnswer}`,
         variant: "destructive"
       });
     }
@@ -107,7 +107,7 @@ export default function AiQuizPage() {
           AI Code Quiz
         </h1>
         <p className="mt-3 max-w-2xl mx-auto text-lg text-muted-foreground">
-          Test your knowledge! An AI will generate a code snippet and a question.
+          Thử thách kiến thức của bạn! AI sẽ tạo một đoạn code và câu hỏi.
         </p>
       </div>
       <div className="mx-auto max-w-4xl">
@@ -116,21 +116,21 @@ export default function AiQuizPage() {
              <div className="flex justify-between items-center mb-4">
                 <Select value={selectedTopic} onValueChange={setSelectedTopic} disabled={gameState === 'loading'}>
                     <SelectTrigger className="w-[280px]">
-                        <SelectValue placeholder="Select a topic" />
+                        <SelectValue placeholder="Chọn một chủ đề" />
                     </SelectTrigger>
                     <SelectContent>
                         {topics.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                     </SelectContent>
                 </Select>
-                 <div className="text-lg font-bold">Score: <span className="text-primary">{score}</span></div>
+                 <div className="text-lg font-bold">Điểm: <span className="text-primary">{score}</span></div>
                 <Button onClick={fetchChallenge} disabled={gameState === 'loading'}>
                     <RefreshCw className={cn("mr-2", gameState === 'loading' && "animate-spin")} />
-                    New Challenge
+                    Thử thách mới
                 </Button>
             </div>
             <CardTitle className="flex items-center gap-2 font-headline text-2xl">
               <Lightbulb className="text-primary glow-primary" />
-              Question
+              Câu hỏi
             </CardTitle>
             {gameState === 'loading' ? (
                 <Skeleton className="h-6 w-3/4 mt-2" />
@@ -142,7 +142,7 @@ export default function AiQuizPage() {
             <div>
               <h3 className="mb-2 font-semibold text-muted-foreground flex items-center gap-2">
                 <Code />
-                Code Snippet
+                Đoạn Code
               </h3>
               <div className="p-4 rounded-md bg-secondary text-secondary-foreground overflow-x-auto">
                 {gameState === 'loading' ? (
@@ -167,7 +167,7 @@ export default function AiQuizPage() {
             {gameState === 'answered' && challenge?.explanation && (
                 <Alert>
                     <Lightbulb className="h-4 w-4" />
-                    <AlertTitle>Explanation</AlertTitle>
+                    <AlertTitle>Giải thích</AlertTitle>
                     <AlertDescription>
                         {challenge.explanation}
                     </AlertDescription>
@@ -179,4 +179,3 @@ export default function AiQuizPage() {
     </div>
   );
 }
-

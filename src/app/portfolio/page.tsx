@@ -12,10 +12,10 @@ export default function PortfolioPage() {
     <div className="container mx-auto py-12">
       <div className="text-center mb-12">
         <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">
-          Choose Your Mission
+          Chọn Nhiệm Vụ
         </h1>
         <p className="mt-3 max-w-2xl mx-auto text-lg text-muted-foreground">
-          Each project is a world of its own. Explore them to see what I can build.
+          Mỗi dự án là một thế giới riêng. Khám phá chúng để xem tôi đã xây dựng những gì.
         </p>
       </div>
 
@@ -24,11 +24,11 @@ export default function PortfolioPage() {
           <TabsList>
             <TabsTrigger value="card-list">
               <List className="mr-2" />
-              Card List
+              Danh Sách
             </TabsTrigger>
             <TabsTrigger value="inventory">
               <LayoutGrid className="mr-2" />
-              Inventory
+              Túi Đồ
             </TabsTrigger>
           </TabsList>
         </div>
@@ -47,7 +47,7 @@ export default function PortfolioPage() {
                 <div className="md:col-span-3 flex justify-center items-start">
                    <div className="sticky top-24">
                      <AnimatedAvatar />
-                     <h3 className="text-center mt-4 font-headline text-2xl">Player</h3>
+                     <h3 className="text-center mt-4 font-headline text-2xl">Người Chơi</h3>
                    </div>
                 </div>
                 <div className="md:col-span-7">
