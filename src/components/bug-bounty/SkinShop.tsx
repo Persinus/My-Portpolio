@@ -7,7 +7,7 @@ import { Palette, CheckCircle2, ShoppingCart } from 'lucide-react';
 import { type EditorTheme, editorThemes } from './editorThemes';
 import { ScrollArea } from '../ui/scroll-area';
 import { cn } from '@/lib/utils';
-import { Tooltip, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 type SkinShopProps = {
   score: number;
@@ -83,5 +83,3 @@ export default function SkinShop({ score, purchasedSkins, equippedSkinId, onPurc
     </Card>
   );
 }
-
-    
