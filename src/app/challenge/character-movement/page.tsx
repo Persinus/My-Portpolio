@@ -24,13 +24,13 @@ const useKeyboardControls = () => {
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (keys.current.hasOwnProperty(e.key)) {
-                keys.current[e.key as keyof typeof keys.current] = true;
+            if (Object.prototype.hasOwnProperty.call(keys.current, e.key)) {
+                (keys.current as any)[e.key] = true;
             }
         };
         const handleKeyUp = (e: KeyboardEvent) => {
-            if (keys.current.hasOwnProperty(e.key)) {
-                keys.current[e.key as keyof typeof keys.current] = false;
+            if (Object.prototype.hasOwnProperty.call(keys.current, e.key)) {
+                (keys.current as any)[e.key] = false;
             }
         };
 
