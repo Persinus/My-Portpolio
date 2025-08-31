@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Terminal } from 'lucide-react';
+import { type EditorTheme } from './editorThemes';
 
 const codeLines = [
   { bug: `const value = prseInt('123');`, fix: `const value = parseInt('123');` },
@@ -20,9 +21,10 @@ const codeLines = [
 type FakeCodeEditorProps = {
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   bugsFixed: number;
+  theme: EditorTheme;
 };
 
-export default function FakeCodeEditor({ onClick, bugsFixed }: FakeCodeEditorProps) {
+export default function FakeCodeEditor({ onClick, bugsFixed, theme }: FakeCodeEditorProps) {
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [isFixed, setIsFixed] = useState(false);
   const [shake, setShake] = useState(0);
@@ -52,15 +54,18 @@ export default function FakeCodeEditor({ onClick, bugsFixed }: FakeCodeEditorPro
       className="w-full font-code text-sm"
     >
       <div
-        className="rounded-lg border-2 border-secondary bg-background/50 p-4 shadow-lg cursor-pointer transition-all duration-300 hover:border-primary/50"
+        className={cn(
+          "rounded-lg border-2 p-4 shadow-lg cursor-pointer transition-all duration-300 hover:border-primary/50",
+          theme.style
+        )}
         onClick={handleClick}
       >
-        <div className="flex items-center gap-2 mb-4 text-muted-foreground border-b border-secondary pb-2">
+        <div className="flex items-center gap-2 mb-4 pb-2" style={{ borderBottomColor: `hsl(var(--border))`}}>
             <Terminal />
             <span>bug-report.js</span>
         </div>
         <pre className="whitespace-pre-wrap">
-          <code>
+          <code style={{ color: `hsl(var(--foreground))`}}>
             {displayCode.split('').map((char, index) => {
               const charIsDifferent = isFixed && char !== currentLine.bug[index];
               return (
@@ -69,7 +74,7 @@ export default function FakeCodeEditor({ onClick, bugsFixed }: FakeCodeEditorPro
                   initial={{ opacity: 0.5 }}
                   animate={{ 
                     opacity: 1, 
-                    color: charIsDifferent ? 'hsl(var(--primary))' : 'hsl(var(--foreground))',
+                    color: charIsDifferent ? `hsl(var(--primary))` : `hsl(var(--foreground))`,
                     scale: charIsDifferent ? [1, 1.2, 1] : 1
                   }}
                   transition={{ delay: charIsDifferent ? index * 0.02 : 0, duration: 0.4 }}
@@ -91,5 +96,7 @@ export default function FakeCodeEditor({ onClick, bugsFixed }: FakeCodeEditorPro
     </motion.div>
   );
 }
+
+    
 
     

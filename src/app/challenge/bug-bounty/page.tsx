@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Award, Bug, Coffee, Cpu, HelpCircle, PlusCircle, Server, ShieldCheck, Zap, History, Star, TrendingUp, Atom } from 'lucide-react';
+import { Award, Bug, Coffee, Cpu, HelpCircle, PlusCircle, Server, ShieldCheck, Zap, History, Star, TrendingUp, Atom, Palette } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -15,6 +15,9 @@ import UpgradeCard from '@/components/bug-bounty/UpgradeCard';
 import AchievementsDialog from '@/components/bug-bounty/AchievementsDialog';
 import { type Achievement, checkAchievements, initialAchievements } from '@/components/bug-bounty/achievements';
 import FakeCodeEditor from '@/components/bug-bounty/FakeCodeEditor';
+import SkinShop from '@/components/bug-bounty/SkinShop';
+import { type EditorTheme, editorThemes } from '@/components/bug-bounty/editorThemes';
+
 
 // --- Helper Functions and Initial State ---
 
@@ -58,6 +61,8 @@ export default function BugBountyPage() {
   const [bossBug, setBossBug] = useState<{ hp: number, maxHp: number } | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>(initialAchievements);
   const [isAchievementsOpen, setIsAchievementsOpen] = useState(false);
+  const [purchasedSkins, setPurchasedSkins] = useState<string[]>(['default']);
+  const [equippedSkin, setEquippedSkin] = useState<EditorTheme>(editorThemes[0]);
 
   const { toast } = useToast();
 
@@ -185,9 +190,35 @@ export default function BugBountyPage() {
     toast({
         title: "Tái Sinh Thành Công!",
         description: `Bạn nhận được +10% sản lượng điểm vĩnh viễn!`,
-        className: 'bg-purple-500 text-white border-purple-500'
+        className: 'bg-purple-600 text-white border-purple-500'
     });
   }
+
+  // --- Skins Logic ---
+  const purchaseSkin = (skin: EditorTheme) => {
+    if (score < skin.cost) {
+      toast({ title: "Không đủ điểm!", description: `Bạn cần ${formatNumber(skin.cost)} điểm để mua skin này.`, variant: "destructive" });
+      return;
+    }
+    if (purchasedSkins.includes(skin.id)) {
+        toast({ title: "Đã sở hữu!", description: "Bạn đã có skin này rồi." });
+        return;
+    }
+
+    setScore(s => s - skin.cost);
+    setPurchasedSkins(current => [...current, skin.id]);
+    toast({ title: "Mua thành công!", description: `Bạn đã mở khóa skin ${skin.name}!`, className: "bg-green-500 text-white" });
+  };
+
+  const equipSkin = (skin: EditorTheme) => {
+    if (!purchasedSkins.includes(skin.id)) {
+      toast({ title: "Chưa sở hữu skin!", description: "Hãy mua skin này trước khi trang bị.", variant: "destructive" });
+      return;
+    }
+    setEquippedSkin(skin);
+    toast({ title: "Đã trang bị!", description: `Đã áp dụng skin ${skin.name}.` });
+  };
+
 
   // --- Power-ups and Events ---
 
@@ -377,7 +408,11 @@ export default function BugBountyPage() {
                         </motion.div>
                     </>
                 ) : (
-                    <FakeCodeEditor onClick={handleBugFixClick} bugsFixed={stats.bugsFixed} />
+                    <FakeCodeEditor 
+                        onClick={handleBugFixClick} 
+                        bugsFixed={stats.bugsFixed} 
+                        theme={equippedSkin}
+                    />
                 )}
             </div>
              <p className="text-center text-muted-foreground">Click Power: {formatNumber(clickPower * prestigeBonus)}</p>
@@ -401,6 +436,13 @@ export default function BugBountyPage() {
                     {clickUpgrades.map(u => <UpgradeCard key={u.id} upgrade={u} score={score} onPurchase={() => purchaseUpgrade(u.id, 'click')} />)}
                 </CardContent>
             </Card>
+            <SkinShop 
+                score={score}
+                purchasedSkins={purchasedSkins}
+                equippedSkinId={equippedSkin.id}
+                onPurchase={purchaseSkin}
+                onEquip={equipSkin}
+            />
         </div>
       </div>
 
@@ -414,5 +456,7 @@ export default function BugBountyPage() {
     </TooltipProvider>
   );
 }
+
+    
 
     
