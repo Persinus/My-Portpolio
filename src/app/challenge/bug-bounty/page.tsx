@@ -529,5 +529,3 @@ export default function BugBountyPage() {
     </TooltipProvider>
   );
 }
-
-    
