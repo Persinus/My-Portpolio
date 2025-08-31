@@ -1,21 +1,21 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Zap, Bug, PlusCircle, Server, Coffee, Cpu, ShieldCheck } from 'lucide-react';
+import { Award, Bug, Coffee, Cpu, HelpCircle, PlusCircle, Server, ShieldCheck, Zap, History, Star, TrendingUp, Atom } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import StatsDisplay from '@/components/bug-bounty/StatsDisplay';
+import UpgradeCard from '@/components/bug-bounty/UpgradeCard';
+import AchievementsDialog from '@/components/bug-bounty/AchievementsDialog';
+import { type Achievement, checkAchievements, initialAchievements } from '@/components/bug-bounty/achievements';
 
-const initialUpgrades = [
-  { id: 'dev', name: 'Thuê Junior Dev', level: 0, baseCost: 15, cost: 15, sps: 0.1, icon: <Coffee className="text-blue-400" /> },
-  { id: 'test', name: 'Test Tự Động', level: 0, baseCost: 100, cost: 100, sps: 1, icon: <ShieldCheck className="text-green-400" /> },
-  { id: 'server', name: 'Server Nhanh Hơn', level: 0, baseCost: 1100, cost: 1100, sps: 8, icon: <Server className="text-purple-400" /> },
-  { id: 'ai', name: 'AI Hỗ Trợ Code', level: 0, baseCost: 12000, cost: 12000, sps: 47, icon: <Cpu className="text-orange-400" /> },
-];
+// --- Helper Functions and Initial State ---
 
 const formatNumber = (num: number): string => {
   if (num < 1000) return num.toFixed(1);
@@ -24,74 +24,134 @@ const formatNumber = (num: number): string => {
   return `${(num / 1_000_000_000).toFixed(2)}B`;
 };
 
-type FloatingNumber = {
-  id: number;
-  value: string;
-  x: number;
-  y: number;
-  isCritical: boolean;
-};
+const initialSpsUpgrades = [
+  { id: 'dev', name: 'Thuê Junior Dev', baseCost: 15, sps: 0.1, icon: <Coffee className="text-blue-400" /> },
+  { id: 'test', name: 'Test Tự Động', baseCost: 100, sps: 1, icon: <ShieldCheck className="text-green-400" /> },
+  { id: 'server', name: 'Server Nhanh Hơn', baseCost: 1100, sps: 8, icon: <Server className="text-purple-400" /> },
+  { id: 'ai', name: 'AI Hỗ Trợ Code', baseCost: 12000, sps: 47, icon: <Cpu className="text-orange-400" /> },
+];
+
+const initialClickUpgrades = [
+  { id: 'mouse', name: 'Chuột Gaming', baseCost: 10, clickMultiplier: 1, icon: <Zap className="text-yellow-400" /> },
+  { id: 'keyboard', name: 'Bàn Phím Cơ', baseCost: 150, clickMultiplier: 5, icon: <Zap className="text-red-400" /> },
+  { id: 'ide', name: 'IDE xịn', baseCost: 2000, clickMultiplier: 50, icon: <Zap className="text-teal-400" /> },
+];
+
+type FloatingNumber = { id: number; value: string; x: number; y: number; isCritical: boolean };
+type RandomEvent = { id: string, message: string, effect: () => void, duration: number };
 
 export default function BugBountyPage() {
+  // --- State Hooks ---
   const [score, setScore] = useState(0);
+  const [stats, setStats] = useState({ totalScore: 0, totalClicks: 0, bugsFixed: 0, prestigeCount: 0 });
   const [sps, setSps] = useState(0);
-  const [upgrades, setUpgrades] = useState(initialUpgrades);
+  const [clickPower, setClickPower] = useState(1);
+  const [spsUpgrades, setSpsUpgrades] = useState(() => initialSpsUpgrades.map(u => ({ ...u, level: 0, cost: u.baseCost })));
+  const [clickUpgrades, setClickUpgrades] = useState(() => initialClickUpgrades.map(u => ({ ...u, level: 0, cost: u.baseCost })));
   const [floatingNumbers, setFloatingNumbers] = useState<FloatingNumber[]>([]);
   const [bugShake, setBugShake] = useState(0);
-
-  // Power-up state
   const [isPowerUpActive, setIsPowerUpActive] = useState(false);
   const [powerUpPosition, setPowerUpPosition] = useState<{ top: string, left: string } | null>(null);
+  const [prestigePoints, setPrestigePoints] = useState(0);
+  const [isPrestigeReady, setIsPrestigeReady] = useState(false);
+  const [currentEvent, setCurrentEvent] = useState<Omit<RandomEvent, 'effect'> | null>(null);
+  const [bossBug, setBossBug] = useState<{ hp: number, maxHp: number } | null>(null);
+  const [achievements, setAchievements] = useState<Achievement[]>(initialAchievements);
+  const [isAchievementsOpen, setIsAchievementsOpen] = useState(false);
+
   const { toast } = useToast();
 
+  const prestigeBonus = useMemo(() => 1 + (prestigePoints * 0.1), [prestigePoints]);
+
+  // --- Game Loop and Timers ---
   useEffect(() => {
     const gameLoop = setInterval(() => {
-      setScore(prevScore => prevScore + sps / 10);
+      const spsWithBonus = sps * prestigeBonus;
+      setScore(prevScore => prevScore + spsWithBonus / 10);
+      setStats(prev => ({ ...prev, totalScore: prev.totalScore + spsWithBonus / 10 }));
     }, 100);
 
     const powerUpSpawner = setInterval(() => {
-      if (!powerUpPosition && Math.random() < 0.1) { // 10% chance to spawn every 5 seconds
-        setPowerUpPosition({
-          top: `${Math.random() * 80 + 10}%`,
-          left: `${Math.random() * 80 + 10}%`
-        });
+      if (!powerUpPosition && !bossBug && Math.random() < 0.1) {
+        setPowerUpPosition({ top: `${Math.random() * 80 + 10}%`, left: `${Math.random() * 80 + 10}%` });
       }
     }, 5000);
+
+    const randomEventSpawner = setInterval(() => {
+        if (!currentEvent && Math.random() < 0.05) { // 5% chance every 10s
+            triggerRandomEvent();
+        }
+    }, 10000);
+
+    const bossBugSpawner = setInterval(() => {
+        if (!bossBug && !currentEvent && Math.random() < 0.03) {
+            spawnBossBug();
+        }
+    }, 20000);
+
 
     return () => {
       clearInterval(gameLoop);
       clearInterval(powerUpSpawner);
+      clearInterval(randomEventSpawner);
+      clearInterval(bossBugSpawner);
     };
-  }, [sps, powerUpPosition]);
+  }, [sps, prestigeBonus, powerUpPosition, currentEvent, bossBug]);
 
-  const addFloatingNumber = (value: number, x: number, y: number, isCritical = false) => {
-    const newFloatingNumber: FloatingNumber = { id: Date.now(), value: `+${value}`, x, y, isCritical };
+  useEffect(() => {
+    setIsPrestigeReady(stats.totalScore >= 1_000_000);
+  }, [stats.totalScore]);
+
+  useEffect(() => {
+    const newAchievements = checkAchievements(achievements, stats, spsUpgrades, clickUpgrades);
+    const newlyAchieved = newAchievements.find((ach, i) => ach.unlocked && !achievements[i].unlocked);
+    if (newlyAchieved) {
+      setAchievements(newAchievements);
+      toast({
+        title: "Đạt thành tựu mới!",
+        description: newlyAchieved.name,
+        className: 'bg-yellow-500 text-black border-yellow-500'
+      });
+    }
+  }, [stats, achievements, toast, spsUpgrades, clickUpgrades]);
+
+  // --- Core Game Logic ---
+
+  const addFloatingNumber = useCallback((value: number, x: number, y: number, isCritical = false) => {
+    const newFloatingNumber: FloatingNumber = { id: Date.now(), value: `+${formatNumber(value)}`, x, y, isCritical };
     setFloatingNumbers(current => [...current, newFloatingNumber]);
     setTimeout(() => {
       setFloatingNumbers(current => current.filter(n => n.id !== newFloatingNumber.id));
     }, 2000);
-  };
+  }, []);
 
   const handleBugFixClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    let clickValue = 1;
-    let isCritical = false;
-
-    if (Math.random() < 0.1) { // 10% chance for a critical hit
-      clickValue = Math.floor(Math.random() * 6) + 5; // 5 to 10 times the value
-      isCritical = true;
+    if (bossBug) {
+        handleBossClick(e);
+        return;
     }
     
-    if (isPowerUpActive) {
-      clickValue *= 2;
-    }
+    let baseClickValue = clickPower * prestigeBonus;
+    let isCritical = false;
 
-    setScore(score + clickValue);
-    addFloatingNumber(clickValue, e.clientX, e.clientY, isCritical);
+    if (Math.random() < 0.1) {
+      baseClickValue *= Math.floor(Math.random() * 6) + 5;
+      isCritical = true;
+    }
+    if (isPowerUpActive) baseClickValue *= 2;
+
+    setScore(score + baseClickValue);
+    setStats(prev => ({ ...prev, totalScore: prev.totalScore + baseClickValue, totalClicks: prev.totalClicks + 1, bugsFixed: prev.bugsFixed + 1}));
+    addFloatingNumber(baseClickValue, e.clientX, e.clientY, isCritical);
     setBugShake(s => s + 1);
   };
+  
+  const purchaseUpgrade = (id: string, type: 'sps' | 'click') => {
+    const isSps = type === 'sps';
+    const upgrades = isSps ? spsUpgrades : clickUpgrades;
+    const setter = isSps ? setSpsUpgrades : setClickUpgrades;
 
-  const purchaseUpgrade = (upgradeId: string) => {
-    const upgrade = upgrades.find(u => u.id === upgradeId);
+    const upgrade = upgrades.find(u => u.id === id);
     if (!upgrade || score < upgrade.cost) {
       toast({ title: "Không đủ điểm!", description: "Tiếp tục sửa bug đi nào.", variant: "destructive" });
       return;
@@ -99,25 +159,41 @@ export default function BugBountyPage() {
 
     setScore(score - upgrade.cost);
 
-    const newUpgrades = upgrades.map(u => u.id === upgradeId
+    const newUpgrades = upgrades.map(u => u.id === id
       ? { ...u, level: u.level + 1, cost: Math.floor(u.baseCost * Math.pow(1.15, u.level + 1)) }
       : u
     );
-    setUpgrades(newUpgrades);
+    setter(newUpgrades as any); // Type assertion needed here
 
-    const newSps = newUpgrades.reduce((total, u) => total + u.level * u.sps, 0);
-    setSps(newSps);
-
-    toast({
-      title: `Đã nâng cấp ${upgrade.name}!`,
-      description: `+${upgrade.sps.toFixed(1)} điểm/giây`,
-      className: 'bg-green-500 text-white border-green-500'
-    });
+    if (isSps) {
+      const newSps = newUpgrades.reduce((total, u) => total + u.level * (u as any).sps, 0);
+      setSps(newSps);
+    } else {
+      const newClickPower = newUpgrades.reduce((total, u) => total + u.level * (u as any).clickMultiplier, 1);
+      setClickPower(newClickPower);
+    }
   };
+
+  const handlePrestige = () => {
+    if (!isPrestigeReady) return;
+    setScore(0);
+    setSps(0);
+    setClickPower(1);
+    setSpsUpgrades(initialSpsUpgrades.map(u => ({ ...u, level: 0, cost: u.baseCost })));
+    setClickUpgrades(initialClickUpgrades.map(u => ({ ...u, level: 0, cost: u.baseCost })));
+    setPrestigePoints(prev => prev + 1);
+    setStats(prev => ({...prev, prestigeCount: prev.prestigeCount + 1, totalScore: 0})); // keep totalClicks and bugsFixed
+    toast({
+        title: "Tái Sinh Thành Công!",
+        description: `Bạn nhận được +10% sản lượng điểm vĩnh viễn!`,
+        className: 'bg-purple-500 text-white border-purple-500'
+    });
+  }
+
+  // --- Power-ups and Events ---
 
   const activatePowerUp = () => {
     if (isPowerUpActive) return;
-
     setPowerUpPosition(null);
     setIsPowerUpActive(true);
     toast({
@@ -125,12 +201,60 @@ export default function BugBountyPage() {
         description: "Điểm mỗi lần nhấp chuột x2 trong 10 giây!",
         className: 'bg-yellow-500 text-black border-yellow-500'
     });
-
     setTimeout(() => setIsPowerUpActive(false), 10000);
   }
 
+  const triggerRandomEvent = () => {
+    const events: RandomEvent[] = [
+        { id: 'deadline', message: "Deadline Gấp! Click x3 trong 15 giây!", duration: 15000, effect: () => setClickPower(p => p * 3) },
+        { id: 'server_crash', message: "Server Sập! SPS giảm 50% trong 30 giây!", duration: 30000, effect: () => setSps(s => s / 2) },
+    ];
+    const event = events[Math.floor(Math.random() * events.length)];
+    setCurrentEvent(event);
+    event.effect();
+    toast({ title: "Sự Kiện Bất Ngờ!", description: event.message, variant: "destructive" });
+    setTimeout(() => {
+        // Revert effect
+        if (event.id === 'deadline') setClickPower(p => p / 3);
+        if (event.id === 'server_crash') setSps(s => s * 2);
+        setCurrentEvent(null);
+    }, event.duration);
+  }
+
+  const spawnBossBug = () => {
+    const hp = 100 + score * 0.1; // HP scales with current score
+    setBossBug({ hp, maxHp: hp });
+    toast({ title: "Bug Trùm Xuất Hiện!", description: "Click liên tục để tiêu diệt nó!", className: 'bg-red-700 text-white border-red-500' });
+  }
+
+  const handleBossClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!bossBug) return;
+    
+    let baseClickValue = clickPower * prestigeBonus;
+    if (isPowerUpActive) baseClickValue *= 2;
+
+    const newHp = bossBug.hp - baseClickValue;
+    setBugShake(s => s + 1);
+    addFloatingNumber(baseClickValue, e.clientX, e.clientY, true);
+
+    if (newHp <= 0) {
+        const reward = bossBug.maxHp * 2;
+        setScore(s => s + reward);
+        setStats(prev => ({...prev, bugsFixed: prev.bugsFixed + 100, totalScore: prev.totalScore + reward}));
+        setBossBug(null);
+        toast({ title: "Đã Diệt Bug Trùm!", description: `Phần thưởng: +${formatNumber(reward)} điểm!`, className: 'bg-green-500 text-white border-green-500'});
+    } else {
+        setBossBug({ ...bossBug, hp: newHp });
+    }
+  }
+
+
+  // --- Render ---
+
   return (
-    <div className="container mx-auto py-12 relative">
+    <TooltipProvider>
+    <div className="container mx-auto py-12 relative overflow-hidden">
+      {/* Floating Numbers */}
       <AnimatePresence>
         {floatingNumbers.map(num => (
           <motion.div
@@ -139,7 +263,7 @@ export default function BugBountyPage() {
             animate={{ opacity: 0, y: -80 }}
             transition={{ duration: 2, ease: "easeOut" }}
             className={cn(
-                "fixed text-lg pointer-events-none font-bold",
+                "fixed text-lg pointer-events-none font-bold z-50",
                 num.isCritical ? "text-yellow-400 text-3xl" : "text-primary"
             )}
             style={{ top: num.y, left: num.x }}
@@ -149,7 +273,8 @@ export default function BugBountyPage() {
         ))}
       </AnimatePresence>
 
-       <AnimatePresence>
+      {/* Power-up */}
+      <AnimatePresence>
         {powerUpPosition && (
             <motion.div
                 initial={{ scale: 0, opacity: 0 }}
@@ -166,72 +291,128 @@ export default function BugBountyPage() {
         )}
        </AnimatePresence>
 
-      <div className="text-center mb-12">
+      <div className="text-center mb-8">
         <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">
           Thợ Săn Bug
         </h1>
         <p className="mt-3 max-w-2xl mx-auto text-lg text-muted-foreground">
-          Nhấp vào con bug để sửa nó. Mua nâng cấp để tự động hóa công việc của bạn.
+          Nhấp vào con bug để sửa nó. Mua nâng cấp, tái sinh và chinh phục các thành tựu!
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        <div className="md:col-span-1 flex flex-col items-center gap-6">
-            <Card className="w-full text-center">
-                <CardHeader>
-                    <CardTitle className="font-headline text-3xl">{formatNumber(score)}</CardTitle>
-                    <CardDescription>Điểm</CardDescription>
-                </CardHeader>
-                 <CardContent>
-                    <p className={cn("text-sm text-primary transition-all", isPowerUpActive && "text-yellow-400 font-bold")}>
-                        {formatNumber(sps)} điểm / giây
-                    </p>
-                </CardContent>
-            </Card>
-            <motion.div 
-                key={bugShake}
-                animate={{ x: [0, -5, 5, -5, 5, 0] }}
-                transition={{ duration: 0.3 }}
-                whileTap={{ scale: 0.9 }}
-            >
-                <Button 
-                    onClick={handleBugFixClick} 
-                    className="h-48 w-48 rounded-full flex-col gap-2 text-2xl glow-primary"
-                >
-                    <Bug className="h-16 w-16"/>
-                    Sửa Bug
-                </Button>
-            </motion.div>
-        </div>
+      {currentEvent && (
+        <motion.div initial={{y: -100}} animate={{y: 0}} className="text-center mb-4 p-2 bg-destructive text-destructive-foreground rounded-lg font-bold">
+            {currentEvent.message}
+        </motion.div>
+      )}
 
-        <div className="md:col-span-2">
-           <Card>
+      <div className="grid grid-cols-1 lg:grid-cols-10 gap-8 max-w-7xl mx-auto">
+        {/* Left Column: Stats & Actions */}
+        <div className="lg:col-span-3 space-y-6">
+            <StatsDisplay score={score} sps={sps} prestigeBonus={prestigeBonus} stats={stats} />
+            
+            <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-2xl">Nâng cấp</CardTitle>
-                    <CardDescription>Mua nâng cấp để tăng điểm mỗi giây.</CardDescription>
+                    <CardTitle>Hành Động</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {upgrades.map(upgrade => (
-                        <Card key={upgrade.id} className={cn("flex items-center p-4 transition-colors", score < upgrade.cost && "bg-muted/50 text-muted-foreground")}>
-                            <div className="mr-4 text-2xl w-8 text-center">{upgrade.icon}</div>
-                            <div className="flex-grow">
-                                <h4 className="font-bold">{upgrade.name}</h4>
-                                <p className="text-sm">Giá: {formatNumber(upgrade.cost)} | Cấp: {upgrade.level}</p>
-                                <p className="text-xs text-primary">+{upgrade.sps.toFixed(1)} điểm/giây mỗi cấp</p>
+                    <Button onClick={() => setIsAchievementsOpen(true)} variant="outline" className="w-full">
+                        <Award className="mr-2" /> Xem Thành Tựu ({achievements.filter(a => a.unlocked).length}/{achievements.length})
+                    </Button>
+                     <Tooltip>
+                        <TooltipTrigger asChild>
+                            <div className="w-full">
+                                <Button onClick={handlePrestige} disabled={!isPrestigeReady} className="w-full bg-purple-600 hover:bg-purple-700">
+                                    <History className="mr-2" /> Tái Sinh (+1 Lợi thế)
+                                </Button>
                             </div>
-                            <Button 
-                                onClick={() => purchaseUpgrade(upgrade.id)}
-                                disabled={score < upgrade.cost}
-                                variant="outline"
-                            >
-                                <PlusCircle className="mr-2"/> Mua
-                            </Button>
-                        </Card>
-                    ))}
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Đạt 1,000,000 điểm để tái sinh. <br /> Reset game nhưng nhận +10% sản lượng điểm vĩnh viễn.</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Bảng Xếp Hạng (Beta)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <ul className="space-y-2 text-sm">
+                        <li className="flex justify-between"><span>1. CodeWizard</span> <span className="font-bold text-primary">5.12T</span></li>
+                        <li className="flex justify-between"><span>2. BugSmasher</span> <span className="font-bold text-primary">4.89T</span></li>
+                        <li className="flex justify-between"><span>3. You</span> <span className="font-bold text-yellow-400">{formatNumber(stats.totalScore)}</span></li>
+                        <li className="flex justify-between"><span>4. ScriptKid</span> <span className="font-bold text-primary">10.5B</span></li>
+                    </ul>
+                </CardContent>
+            </Card>
+        </div>
+
+        {/* Middle Column: The Bug */}
+        <div className="lg:col-span-4 flex flex-col items-center gap-6">
+            <div className="w-full relative">
+                {bossBug && (
+                    <div className="w-full mb-2">
+                        <p className="text-center font-bold text-red-500">BUG TRÙM</p>
+                        <div className="h-4 w-full bg-muted rounded-full">
+                            <motion.div 
+                                className="h-full bg-red-600 rounded-full"
+                                initial={{width: '100%'}}
+                                animate={{width: `${(bossBug.hp / bossBug.maxHp) * 100}%`}}
+                            />
+                        </div>
+                    </div>
+                )}
+                <motion.div 
+                    key={bugShake}
+                    animate={{ x: [0, -5, 5, -5, 5, 0] }}
+                    transition={{ duration: 0.3 }}
+                    whileTap={{ scale: 0.9 }}
+                >
+                    <Button 
+                        onClick={handleBugFixClick} 
+                        className={cn("h-64 w-64 rounded-full flex-col gap-2 text-2xl",
+                         bossBug ? 'bg-red-800 hover:bg-red-900 glow-destructive' : 'glow-primary'
+                        )}
+                    >
+                        <Bug className="h-24 w-24"/>
+                        {bossBug ? `TẤN CÔNG` : 'Sửa Bug'}
+                    </Button>
+                </motion.div>
+            </div>
+             <p className="text-center text-muted-foreground">Click Power: {formatNumber(clickPower * prestigeBonus)}</p>
+        </div>
+
+        {/* Right Column: Upgrades */}
+        <div className="lg:col-span-3 space-y-6">
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><TrendingUp /> Nâng Cấp Tự Động (SPS)</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                    {spsUpgrades.map(u => <UpgradeCard key={u.id} upgrade={u} score={score} onPurchase={() => purchaseUpgrade(u.id, 'sps')} />)}
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Star /> Nâng Cấp Click</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                    {clickUpgrades.map(u => <UpgradeCard key={u.id} upgrade={u} score={score} onPurchase={() => purchaseUpgrade(u.id, 'click')} />)}
                 </CardContent>
             </Card>
         </div>
       </div>
+
+       <AchievementsDialog 
+        isOpen={isAchievementsOpen} 
+        onClose={() => setIsAchievementsOpen(false)}
+        achievements={achievements}
+       />
+
     </div>
+    </TooltipProvider>
   );
 }
+
