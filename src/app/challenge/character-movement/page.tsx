@@ -1,81 +1,30 @@
 
 'use client';
 
-import { Suspense, useRef, useEffect, useState, useCallback } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Box, OrbitControls, Plane } from '@react-three/drei';
-import type { Mesh } from 'three';
+import { Suspense, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+
+// Dynamically import the 3D scene component with SSR turned off
+const CharacterMovementScene = dynamic(
+    () => import('@/components/CharacterMovementScene'),
+    { 
+        ssr: false,
+        loading: () => (
+            <div className="w-full h-full flex items-center justify-center bg-muted">
+                <Skeleton className="w-full h-full" />
+            </div>
+        )
+    }
+);
 
 
 // Main page component
 export default function CharacterMovementPage() {
     const { toast } = useToast();
-
-    // Custom hook to handle keyboard inputs, defined inside the main component
-    const useKeyboardControls = () => {
-        const keys = useRef({
-            ArrowUp: false,
-            ArrowDown: false,
-            ArrowLeft: false,
-            ArrowRight: false,
-            w: false,
-            a: false,
-            s: false,
-            d: false,
-        });
-
-        useEffect(() => {
-            const handleKeyDown = (e: KeyboardEvent) => {
-                if (Object.prototype.hasOwnProperty.call(keys.current, e.key)) {
-                    (keys.current as any)[e.key] = true;
-                }
-            };
-            const handleKeyUp = (e: KeyboardEvent) => {
-                if (Object.prototype.hasOwnProperty.call(keys.current, e.key)) {
-                    (keys.current as any)[e.key] = false;
-                }
-            };
-
-            window.addEventListener('keydown', handleKeyDown);
-            window.addEventListener('keyup', handleKeyUp);
-            return () => {
-                window.removeEventListener('keydown', handleKeyDown);
-                window.removeEventListener('keyup', handleKeyUp);
-            };
-        }, []);
-
-        return keys;
-    };
-
-    // Player component, defined inside the main component
-    function Player() {
-        const playerRef = useRef<Mesh>(null!);
-        const keyboard = useKeyboardControls();
-        const speed = 0.1;
-
-        useFrame((_, delta) => {
-            if (!playerRef.current) return;
-
-            const move = { x: 0, z: 0 };
-            if (keyboard.current.ArrowUp || keyboard.current.w) move.z -= speed;
-            if (keyboard.current.ArrowDown || keyboard.current.s) move.z += speed;
-            if (keyboard.current.ArrowLeft || keyboard.current.a) move.x -= speed;
-            if (keyboard.current.ArrowRight || keyboard.current.d) move.x += speed;
-
-            playerRef.current.position.x += move.x;
-            playerRef.current.position.z += move.z;
-        });
-
-        return (
-            <Box ref={playerRef} args={[1, 1, 1]} position={[0, 0.5, 0]}>
-                <meshStandardMaterial color="hsl(var(--primary))" />
-            </Box>
-        );
-    }
-
 
     useEffect(() => {
         toast({
@@ -96,17 +45,9 @@ export default function CharacterMovementPage() {
                 </p>
             </div>
             <div className="w-full max-w-4xl h-[60vh] rounded-lg overflow-hidden border-2 border-primary glow-primary">
-                <Canvas camera={{ position: [0, 8, 10] }}>
-                    <Suspense fallback={null}>
-                        <ambientLight intensity={0.5} />
-                        <directionalLight position={[10, 10, 5]} intensity={1} />
-                        <Plane args={[20, 20]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-                            <meshStandardMaterial color="hsl(var(--secondary))" />
-                        </Plane>
-                        <Player />
-                        <OrbitControls enableZoom={true} enablePan={true} />
-                    </Suspense>
-                </Canvas>
+                <Suspense fallback={<Skeleton className="w-full h-full" />}>
+                   <CharacterMovementScene />
+                </Suspense>
             </div>
              <div className="mt-8 text-center text-muted-foreground">
                 <p className="font-bold mb-4">Controls:</p>
@@ -123,3 +64,4 @@ export default function CharacterMovementPage() {
         </div>
     );
 }
+

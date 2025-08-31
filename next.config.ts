@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 import path from 'path';
 
@@ -37,16 +38,6 @@ const nextConfig: NextConfig = {
       }
     ],
   },
-  webpack: (config, { isServer }) => {
-    // Aliases to ensure single versions of these libraries
-    config.resolve.alias = {
-        ...config.resolve.alias,
-        '@react-three/fiber': path.resolve(__dirname, 'node_modules/@react-three/fiber'),
-        '@react-three/drei': path.resolve(__dirname, 'node_modules/@react-three/drei'),
-        'three': path.resolve(__dirname, 'node_modules/three'),
-    };
-    return config;
-  }
 };
 
 export default nextConfig;
