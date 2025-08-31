@@ -17,7 +17,7 @@ export default function AnimatedAvatar() {
       }}
     >
       <Image
-        src="https://picsum.photos/200/200"
+        src="https://avatars.githubusercontent.com/u/199482290?v=4"
         alt="Animated Avatar"
         width={200}
         height={200}
